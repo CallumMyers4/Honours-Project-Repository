@@ -6,33 +6,30 @@ public class PerlinNoiseGeneratorScript : MonoBehaviour
 {
     private int width = 256, height = 256;
     private int xOffset, yOffset;   //used to randomise the position of the noise to create new levels
-    private float scale = 20.0f;
+    private float scale = 30.0f;
     [SerializeField]
     private int seed = 0;   //in later iteration there will be an option for user input, but random for now
-    public Texture2D perlinNoise;
-    private Renderer rendererC;     //just stores component (remove after testing)
+    private Texture2D perlinNoise;
 
-    // Start is called before the first frame update
     void Start()
     {
-        rendererC = GetComponent<Renderer>();   //gets component (remove after testing)
-    }
+        seed = Random.Range(0, 9999);     //set a random seeds
 
-    // Update is called once per frame
-    void Update()
-    {
-        //------------------------move to start function after testing-------------------------------//
-        //seed = Random.Range(0, 9999);     //set a random seed
-        
-        //set the offsets to use this seed
+        //offset using the seed for new textures each time
         xOffset = seed;
         yOffset = seed;
-        //------------------------------------------------------------------------------------------//
 
-        CreatePerlinNoise();    //generates the texture
+        CreatePerlinNoise();    //populate noise texture
     }
 
-    private void CreatePerlinNoise()
+    //returns the generated perlin noise texture
+    public Texture2D GetNoiseTexture()
+    {
+        return perlinNoise;
+    }
+
+    //void to call when new noise needs to be generated
+    public void CreatePerlinNoise()
     {
         perlinNoise = new Texture2D(width, height);     //create a new texture to store the noise
 
@@ -53,6 +50,5 @@ public class PerlinNoiseGeneratorScript : MonoBehaviour
         }
 
         perlinNoise.Apply();    //update texture with new colours
-        rendererC.material.mainTexture = perlinNoise;    //shows in renderer (remove after testing)
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerMovementScript : MonoBehaviour
 {
     //Variables
-    private float moveSpeed = 5;    //the horizontal move speed of player
+    private float moveSpeed = 15;    //the horizontal move speed of player
     private float jumpHeight = 350;     //the force applied when player jumps
     private bool inAir = false;     //whether or not player is in the air
     private float moveDir;  //the horizontal direction to move
