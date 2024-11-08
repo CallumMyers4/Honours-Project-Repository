@@ -21,7 +21,7 @@ public class TerrainPassOneScript : MonoBehaviour
     // Start is called before the first frame update
     IEnumerator GenerateLevel()
     {
-        yield return new WaitForSeconds(0.05f);
+        yield return new WaitForSeconds(0.05f);     //gives time for noise generator to populate
 
         float levelWidth = endX - startX;   //works out the total width of the level by subtracting start pos from end pos
 
@@ -30,7 +30,7 @@ public class TerrainPassOneScript : MonoBehaviour
         //run through each x position in the level
         for (int x = 0; x < levelWidth; x++)
         {
-                    int textureX = Mathf.FloorToInt((float)(x + startX) / levelWidth * noiseTexture.width); //moves to the correct pixel within the texture
+            int textureX = Mathf.FloorToInt((float)(x + startX) / levelWidth * noiseTexture.width); //moves to the correct pixel within the texture
             Color pixelColor = noiseTexture.GetPixel(textureX, 0); //gets the noise value at this position (0 means it goes in a straight
                                                                     //horiontal line through the texture)
 
