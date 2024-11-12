@@ -569,6 +569,7 @@ MonoBehaviour:
   endX: 100
   lowestY: -20
   highestY: 20
+  maxHeightChange: 1
   noiseGenerator: {fileID: 1190136720}
   groundPrefab: {fileID: 6372034140923359723, guid: 987641aa8e9db5c408f9f71a155ec6d7, type: 3}
 --- !u!114 &1190136720
@@ -583,6 +584,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fddc40c1bbf3c3d4ea7547a31285d25d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scale: 30
   seed: 0
 --- !u!4 &1190136721
 Transform:

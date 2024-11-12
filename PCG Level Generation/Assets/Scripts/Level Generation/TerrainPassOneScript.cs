@@ -9,6 +9,8 @@ public class TerrainPassOneScript : MonoBehaviour
     [SerializeField]
     private float lowestY, highestY;    //top and bottom constraints of the level height
     [SerializeField]
+    private int maxHeightChange;
+    [SerializeField]
     private PerlinNoiseGeneratorScript noiseGenerator;  //reference to script for generating noise
     [SerializeField]
     private GameObject groundPrefab;
@@ -18,6 +20,7 @@ public class TerrainPassOneScript : MonoBehaviour
         StartCoroutine(GenerateLevel());
     }
 
+    int previousHeight = 0;
     // Start is called before the first frame update
     IEnumerator GenerateLevel()
     {
@@ -44,6 +47,10 @@ public class TerrainPassOneScript : MonoBehaviour
             */
             int groundHeight = Mathf.FloorToInt(groundDirection * ((highestY - lowestY) / 2) + ((highestY + lowestY) / 2));
             groundHeight = Mathf.Max(groundHeight, 1); //always place at least one block
+
+            //check to ensure the new height does not make the level unplayable, then sets last height to this one for next loop
+            groundHeight = Mathf.Clamp(groundHeight, previousHeight - maxHeightChange, previousHeight + maxHeightChange);
+            previousHeight = groundHeight;
 
             //places blocks up to the correct ground height for the current X position
             for (int y = 0; y < groundHeight; y++)
