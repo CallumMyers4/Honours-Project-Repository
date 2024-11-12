@@ -566,7 +566,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startX: -9
-  endX: 50
+  endX: 100
   lowestY: -20
   highestY: 20
   noiseGenerator: {fileID: 1190136720}
