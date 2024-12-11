@@ -14,18 +14,23 @@ public class TerrainPassOneScript : MonoBehaviour
     private PerlinNoiseGeneratorScript noiseGenerator;  //reference to script for generating noise
     [SerializeField]
     private GameObject groundPrefab;
+    int previousHeight = 0;     //stores the height of the last column generated
+    public bool passOneCompleted = false;   //checks when pass is completed
 
-    void Start()
+    //in update now instead of start because if noise generation script is not completed by the time this one runs start it will never
+    //run the script
+    void Update()
     {
-        StartCoroutine(GenerateLevel());
+        if (noiseGenerator.noiseGenerated == true)
+        {
+            GenerateLevel();
+            passOneCompleted = true;    //tells next script that first pass is finished
+        }
     }
 
-    int previousHeight = 0;
     // Start is called before the first frame update
-    IEnumerator GenerateLevel()
+    private void GenerateLevel()
     {
-        yield return new WaitForSeconds(0.05f);     //gives time for noise generator to populate
-
         float levelWidth = endX - startX;   //works out the total width of the level by subtracting start pos from end pos
 
         Texture2D noiseTexture = noiseGenerator.GetNoiseTexture();     //assign the premade texture to a var

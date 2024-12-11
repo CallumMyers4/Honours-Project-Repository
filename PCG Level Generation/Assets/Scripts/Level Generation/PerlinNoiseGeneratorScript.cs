@@ -11,6 +11,7 @@ public class PerlinNoiseGeneratorScript : MonoBehaviour
     [SerializeField]
     private int seed = 0;   //in later iteration there will be an option for user input, but random for now
     private Texture2D perlinNoise;
+    public bool noiseGenerated = false; //check when noise generation is completed
 
     void Start()
     {
@@ -21,6 +22,8 @@ public class PerlinNoiseGeneratorScript : MonoBehaviour
         yOffset = seed;
 
         CreatePerlinNoise();    //populate noise texture
+
+        noiseGenerated = true;
     }
 
     //returns the generated perlin noise texture
