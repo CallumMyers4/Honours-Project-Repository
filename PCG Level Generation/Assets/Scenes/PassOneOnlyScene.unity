@@ -546,6 +546,7 @@ GameObject:
   - component: {fileID: 1190136721}
   - component: {fileID: 1190136720}
   - component: {fileID: 1190136719}
+  - component: {fileID: 1190136722}
   m_Layer: 0
   m_Name: Level Generator
   m_TagString: Untagged
@@ -573,6 +574,7 @@ MonoBehaviour:
   startPlatformLength: 5
   noiseGenerator: {fileID: 1190136720}
   groundPrefab: {fileID: 6372034140923359723, guid: 987641aa8e9db5c408f9f71a155ec6d7, type: 3}
+  passOneCompleted: 0
 --- !u!114 &1190136720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -587,6 +589,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scale: 30
   seed: 0
+  noiseGenerated: 0
 --- !u!4 &1190136721
 Transform:
   m_ObjectHideFlags: 0
@@ -602,6 +605,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1190136722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1190136718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4fa1931542cf6f4d992f8ebde56c35c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firstPass: {fileID: 1190136719}
+  passTwoCompleted: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

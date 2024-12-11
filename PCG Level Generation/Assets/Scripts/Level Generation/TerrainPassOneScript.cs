@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class TerrainPassOneScript : MonoBehaviour
 {
+    //made all these public for now for easy access to next script, may change later
     [SerializeField]
-    private float startX, endX;     //start and end positions for the level
+    public float startX, endX;     //start and end positions for the level
     [SerializeField]
-    private float lowestY, highestY;    //top and bottom constraints of the level height
+    public float lowestY, highestY;    //top and bottom constraints of the level height
     [SerializeField]
-    private int maxHeightChange, startPlatformLength;
+    public int maxHeightChange, startPlatformLength;
     [SerializeField]
-    private PerlinNoiseGeneratorScript noiseGenerator;  //reference to script for generating noise
+    public PerlinNoiseGeneratorScript noiseGenerator;  //reference to script for generating noise
     [SerializeField]
     private GameObject groundPrefab;
     int previousHeight = 0;     //stores the height of the last column generated
@@ -21,7 +22,8 @@ public class TerrainPassOneScript : MonoBehaviour
     //run the script
     void Update()
     {
-        if (noiseGenerator.noiseGenerated == true)
+        //will not run script unless the noise has successfully generated
+        if (noiseGenerator.noiseGenerated == true && passOneCompleted == false)
         {
             GenerateLevel();
             passOneCompleted = true;    //tells next script that first pass is finished
