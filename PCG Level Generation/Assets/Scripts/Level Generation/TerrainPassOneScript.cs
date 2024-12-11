@@ -8,7 +8,7 @@ public class TerrainPassOneScript : MonoBehaviour
     [SerializeField]
     public float startX, endX;     //start and end positions for the level
     [SerializeField]
-    public float lowestY, highestY;    //top and bottom constraints of the level height
+    public int lowestY, highestY;    //top and bottom constraints of the level height
     [SerializeField]
     public int maxHeightChange, startPlatformLength;
     [SerializeField]
@@ -70,7 +70,7 @@ public class TerrainPassOneScript : MonoBehaviour
             }
 
             //places blocks up to the correct ground height for the current X position
-            for (int y = 0; y < groundHeight; y++)
+            for (int y = lowestY; y < groundHeight; y++)
             {
                 Instantiate(groundPrefab, new Vector3(x + startX, y, 0), Quaternion.identity, transform);
             }

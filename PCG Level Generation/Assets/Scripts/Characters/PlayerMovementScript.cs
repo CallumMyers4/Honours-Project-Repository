@@ -8,6 +8,7 @@ public class PlayerMovementScript : MonoBehaviour
     //Variables
     private float moveSpeed = 15;    //the horizontal move speed of player
     private float jumpHeight = 350;     //the force applied when player jumps
+    [SerializeField]
     private bool inAir = false;     //whether or not player is in the air
     private float moveDir;  //the horizontal direction to move
     private Rigidbody2D playerRB;   //access to rigidbody component of the player
@@ -57,6 +58,12 @@ public class PlayerMovementScript : MonoBehaviour
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name); 
         }
+
+        //jump method
+        if (Input.GetButtonDown("Jump") && inAir == false)  //checks if player is pressing the jump button whilst on the ground
+        {
+            playerRB.AddForce(new Vector2(playerRB.velocity.x, jumpHeight));    //add a force to the Y velocity of the player's rigidbody
+        }
     }
 
 
@@ -65,12 +72,6 @@ public class PlayerMovementScript : MonoBehaviour
     {
         playerRB.velocity = new Vector2(moveSpeed * moveDir, playerRB.velocity.y);  //change the velocity of the
                                                                                     // player's rigidbody to move in X axis
-
-        //jump method
-        if (Input.GetButtonDown("Jump") && inAir == false)  //checks if player is pressing the jump button whilst on the ground
-        {
-            playerRB.AddForce(new Vector2(playerRB.velocity.x, jumpHeight));    //add a force to the Y velocity of the player's rigidbody
-        }
     }
 
 

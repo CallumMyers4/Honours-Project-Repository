@@ -7,6 +7,8 @@ public class TerrainPassTwoScript : MonoBehaviour
 {
     [SerializeField]
     private TerrainPassOneScript firstPass;     //access previous pass
+    private int positionsToCheckBack, positionsToCheckForward;  //ints to decide how far forward/back the chain will checkt to make
+                                                                //its choices
     [SerializeField]
     public bool passTwoCompleted;   //tells next pass when to run
 
