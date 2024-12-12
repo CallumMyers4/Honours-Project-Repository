@@ -10,3 +10,4 @@ Alpay, B., 2024. A comparison of procedural-generated and human-designed two-dim
 Implementation Sources:
 https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Physics2D.Raycast.html - used for making gaps
 https://docs.unity3d.com/6000.0/Documentation/ScriptReference/RaycastHit2D.html - how to store hits from the raycast
+https://github.com/chriscore/MarkovSharp - C# Markov Chains in VS

@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class PlayerMovementScript : MonoBehaviour
@@ -52,12 +51,6 @@ public class PlayerMovementScript : MonoBehaviour
         }
         else
             playerAnimator.SetBool("moving", false);    //tells animator to switch back to idle
-
-        //reload scene if player presses F5
-        if (Input.GetKeyDown(KeyCode.F5))
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name); 
-        }
 
         //jump method
         if (Input.GetButtonDown("Jump") && inAir == false)  //checks if player is pressing the jump button whilst on the ground
