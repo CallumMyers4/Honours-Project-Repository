@@ -11,3 +11,5 @@ Implementation Sources:
 https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Physics2D.Raycast.html - used for making gaps
 https://docs.unity3d.com/6000.0/Documentation/ScriptReference/RaycastHit2D.html - how to store hits from the raycast
 https://github.com/chriscore/MarkovSharp - C# Markov Chains in VS
+https://nickmcd.me/2019/10/30/markov-chains-for-procedural-buildings/ - Markov in Unity (Nick's blog)
+https://www.sbgames.org/sbgames2018/files/papers/ComputacaoShort/188123.pdf - Markov in Unity (Thesis)
