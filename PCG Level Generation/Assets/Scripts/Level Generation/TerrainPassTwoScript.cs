@@ -76,24 +76,19 @@ public class TerrainPassTwoScript : MonoBehaviour
                     Destroy(objectsAtX[j].collider.gameObject);     //uses the collider component of each object found 
                                                                     //to access the gameObject and destroys it
                 }
-
                 lastGapX = i;   //set the X position of the last gap to be here
-                consecutiveGaps++;  //add 1 to consecutive counter
             }
-            else
-                consecutiveGaps = 0;   //reset counter
-
 
 
             //temp - use Markov Chains later
-            int randChoice = UnityEngine.Random.Range(0, 3);
+           /* int randChoice = UnityEngine.Random.Range(0, 3);
             if (randChoice == 1)
             {
                 /*this fires a raycast to find all objects at the curernt X position in the loop, starting from just above the highest
                 possible Y position set in firstPass, uses vector2.down to fire directly downwards, at a length of just over the
                 difference between highest and lowest Y to make sure it doesnt miss any objects, and returns all of these objects it
                 finds as a struct*/
-                RaycastHit2D[] objectsAtX = Physics2D.RaycastAll(new Vector2(i, firstPass.highestY + 1), Vector2.down, 
+               /* RaycastHit2D[] objectsAtX = Physics2D.RaycastAll(new Vector2(i, firstPass.highestY + 1), Vector2.down, 
                                                                 (MathF.Abs(firstPass.highestY - firstPass.lowestY) + 2));
 
                 //runs a loop to go through all objects stored in the struct to delete them
@@ -102,7 +97,7 @@ public class TerrainPassTwoScript : MonoBehaviour
                     Destroy(objectsAtX[j].collider.gameObject);     //uses the collider component of each object found 
                                                                     //to access the gameObject and destroys it
                 }
-            }
+            }*/
         }
     }
 
@@ -117,7 +112,49 @@ public class TerrainPassTwoScript : MonoBehaviour
     //decide if ground should be destroyed
     private bool GroundMarkov()
     {
-        return false;
+        float chance = 0.5f;    //set a default chance
+
+        //hard limit check, if it returns true dont make gap any bigger
+        if (consecutiveGaps == gapsLimit)
+        {
+            blocksSinceGap++;
+            consecutiveGaps = 0;
+            return false;
+        }
+
+        //increase chance based on how flat ground is
+        for (int i = 0; i < blocksAtCurY; i++)
+        {
+            chance += 0.02f;
+        }
+
+        //this decreases the chance based on how many blocks are at a different Y - may remove later unsure as of now
+        for (int i = 0; i < (positionsToCheckForward + positionsToCheckBack) - blocksAtCurY; i++)
+        {
+            chance -= 0.1f;
+        }
+
+        chance += blocksSinceGap * 0.05f;   //increase chance as gaps get further apart
+        chance += consecutiveGaps * 0.1f;    //increase chance if already a gap
+
+        //generate a random number between 1 and 0 to essentially turn the chance into a percentage
+        float randChoice = UnityEngine.Random.Range(0.0f, 1.0f);
+        Debug.Log($"Chance:  {chance}");
+        Debug.Log($"Random:  {randChoice}");
+        if (randChoice < chance)
+        {
+            //reset blocks since gap because this is one, then add 1 to consecutive gaps and tell main to destroy
+            blocksSinceGap = 0;
+            consecutiveGaps++;
+            return true;
+        }
+        else
+        {   
+            //add 1 to blocks since the last gap, reset consecutive gaps and tell main to keep ground and move on
+            blocksSinceGap++;
+            consecutiveGaps = 0;
+            return false;
+        }
     }
 
 
@@ -175,13 +212,6 @@ public class TerrainPassTwoScript : MonoBehaviour
             else
                 continue;   //if not then end the search since this is as far back as the flat ground goes
         }
-
-        int chance = 50;
-        for (int i = 0; i < blocksAtCurY; i++)
-        {
-            chance += 10;
-        }
-        Debug.Log($"FlatBlocks: {blocksAtCurY} | Chance:  {chance} | CurrentX: {currentX}| YToCheck: {currentY}");
 
         blocksSinceGap = currentX - lastGapX;   //simple calculation to find the last gap
     }
