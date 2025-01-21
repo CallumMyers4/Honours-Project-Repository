@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Microsoft.Unity.VisualStudio.Editor;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -56,57 +57,114 @@ public class TerrainPassTwoScript : MonoBehaviour
     private void MakeGaps()
     {
         groundStates currentState = groundStates.limit;
+        bool checkComplete = false;
 
         //run through each position in the level (starting at the end of the initial platform, ending at the end of the level)
         for (int i = firstPass.startPlatformLength; i < firstPass.endX; i++)
         {
-            float progressChance = 0.5f;    //initial chance of progressing to next stage
-
+            currentState = groundStates.limit;  //reset state at start of each block
+            checkComplete = false;
+            float progressChance = 1.0f;    //initial chance of progressing to next stage (start at 1 to guarentee passing stage
+                                            //1 so long as theres not too long a gap)
             //start of Markovs
             AdjustGroundValues(i);  //pass in the current X value being checked to allow the Markov to change values
 
-            switch (currentState)
+            //uses an internal loop to get around C# requiring a continue statement and not just allowing a fall to the next state,
+            //which was causing it to skip iterations of the block checking
+            while (!checkComplete)
             {
-                case groundStates.limit:
-                    if (consecutiveGaps == gapsLimit)
-                    {
-                        blocksSinceGap++;
-                        consecutiveGaps = 0;
-                        progressChance = 0;
-                    }
-                    //if it fails to pass the stage check then end the chain and move on to the next loop,
-                    //otherwise fall through to next stage
-                    if (!MoveStages(currentState, progressChance))
-                        break;
-                    else
-                    {
-                        currentState = groundStates.xPositionQuota;
+                switch (currentState)
+                {
+                    case groundStates.limit:
+                    Debug.Log("Gaps: " + consecutiveGaps);
+                        if (consecutiveGaps == gapsLimit)
+                        {
+                            blocksSinceGap++;
+                            consecutiveGaps = 0;
+                            progressChance = 0;
+                        }
+                        //if it fails to pass the stage check then end the chain and move on to the next loop,
+                        //otherwise fall through to next stage
+                        if (!MoveStages(currentState, progressChance))
+                        {
+                            blocksSinceGap++;
+                            consecutiveGaps = 0;
+                            checkComplete = true;
+                            break;
+                        }
+                        else
+                        {
+                            currentState = groundStates.xPositionQuota;
+                            continue;
+                        }
+                    
+                    //-------------------NOT YET IMPLENENTED-------------------//
+                    case groundStates.xPositionQuota:
+                        currentState = groundStates.surroundingYLevels;
                         continue;
-                    }
-                case groundStates.xPositionQuota:
-                    break;
-                case groundStates.surroundingYLevels:
-                    break;
-                case groundStates.timeSinceLastGap:
-                    break;
-                case groundStates.destroyGround:
-                    /*this fires a raycast to find all objects at the current X position in the loop, starting from just above the highest
-                    possible Y position set in firstPass, uses vector2.down to fire directly downwards, at a length of just over the
-                    difference between highest and lowest Y to make sure it doesnt miss any objects, and returns all of these objects it
-                    finds as a struct*/
-                    RaycastHit2D[] objectsAtX = Physics2D.RaycastAll(new Vector2(i, firstPass.highestY + 1), Vector2.down, 
-                                                                    (MathF.Abs(firstPass.highestY - firstPass.lowestY) + 2));
+                    //---------------------------------------------------------//
 
-                    //runs a loop to go through all objects stored in the struct to delete them
-                    for (int j = 0; j < objectsAtX.Length; j++)
-                    {
-                        Destroy(objectsAtX[j].collider.gameObject);     //uses the collider component of each object found 
-                                                                        //to access the gameObject and destroys it
-                    }
+                    case groundStates.surroundingYLevels:
+                        //increase chance based on how flat ground is
+                        for (int j = 0; j < blocksAtCurY; j++)
+                        {
+                            progressChance += 0.02f;
+                        }
+                        //this decreases the chance based on how many blocks are at a different Y
+                        for (int j = 0; j < (positionsToCheckForward + positionsToCheckBack) - blocksAtCurY; j++)
+                        {
+                            progressChance -= 0.1f;
+                        }
+                        if (!MoveStages(currentState, progressChance))
+                        {
+                            blocksSinceGap++;
+                            consecutiveGaps = 0;
+                            checkComplete = true;
+                            break;
+                        }
+                        else
+                        {
+                            currentState = groundStates.timeSinceLastGap;
+                            continue;
+                        }
 
-                    lastGapX = i;   //update last gap position to be here
-                    break;
-            }
+                    case groundStates.timeSinceLastGap:
+                        progressChance += blocksSinceGap * 0.05f;   //increase chance as gaps get further apart
+                        progressChance += consecutiveGaps * 0.1f;    //increase chance if already a gap
+                        if (!MoveStages(currentState, progressChance))
+                        {
+                            blocksSinceGap++;
+                            consecutiveGaps = 0;
+                            checkComplete = true;
+                            break;
+                        }
+                        else
+                        {
+                            currentState = groundStates.destroyGround;
+                            continue;
+                        }
+
+                    case groundStates.destroyGround:
+                        /*this fires a raycast to find all objects at the current X position in the loop, starting from just above the highest
+                        possible Y position set in firstPass, uses vector2.down to fire directly downwards, at a length of just over the
+                        difference between highest and lowest Y to make sure it doesnt miss any objects, and returns all of these objects it
+                        finds as a struct*/
+                        RaycastHit2D[] objectsAtX = Physics2D.RaycastAll(new Vector2(i, firstPass.highestY + 1), Vector2.down, 
+                                                                        (MathF.Abs(firstPass.highestY - firstPass.lowestY) + 2));
+
+                        //runs a loop to go through all objects stored in the struct to delete them
+                        for (int k = 0; k < objectsAtX.Length; k++)
+                        {
+                            Destroy(objectsAtX[k].collider.gameObject);     //uses the collider component of each object found 
+                                                                            //to access the gameObject and destroys it
+                        }
+                        consecutiveGaps++;  //add to the consecutive gap counter
+                        blocksSinceGap = 0; //there is no blocks since last gap now
+                        lastGapX = i;   //update last gap position to be here
+                        checkComplete = true;
+                        break;
+                }
+            }          
         }
     }
 
@@ -136,7 +194,7 @@ public class TerrainPassTwoScript : MonoBehaviour
             chance += 0.02f;
         }
 
-        //this decreases the chance based on how many blocks are at a different Y - may remove later unsure as of now
+        //this decreases the chance based on how many blocks are at a different Y
         for (int i = 0; i < (positionsToCheckForward + positionsToCheckBack) - blocksAtCurY; i++)
         {
             chance -= 0.1f;
