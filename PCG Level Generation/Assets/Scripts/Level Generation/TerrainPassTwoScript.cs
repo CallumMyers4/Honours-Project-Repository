@@ -55,49 +55,58 @@ public class TerrainPassTwoScript : MonoBehaviour
     //create gaps in the ground
     private void MakeGaps()
     {
+        groundStates currentState = groundStates.limit;
+
         //run through each position in the level (starting at the end of the initial platform, ending at the end of the level)
         for (int i = firstPass.startPlatformLength; i < firstPass.endX; i++)
         {
+            float progressChance = 0.5f;    //initial chance of progressing to next stage
+
             //start of Markovs
             AdjustGroundValues(i);  //pass in the current X value being checked to allow the Markov to change values
 
-            if (GroundMarkov() == true)
+            switch (currentState)
             {
-                /*this fires a raycast to find all objects at the curernt X position in the loop, starting from just above the highest
-                possible Y position set in firstPass, uses vector2.down to fire directly downwards, at a length of just over the
-                difference between highest and lowest Y to make sure it doesnt miss any objects, and returns all of these objects it
-                finds as a struct*/
-                RaycastHit2D[] objectsAtX = Physics2D.RaycastAll(new Vector2(i, firstPass.highestY + 1), Vector2.down, 
-                                                                (MathF.Abs(firstPass.highestY - firstPass.lowestY) + 2));
+                case groundStates.limit:
+                    if (consecutiveGaps == gapsLimit)
+                    {
+                        blocksSinceGap++;
+                        consecutiveGaps = 0;
+                        progressChance = 0;
+                    }
+                    //if it fails to pass the stage check then end the chain and move on to the next loop,
+                    //otherwise fall through to next stage
+                    if (!MoveStages(currentState, progressChance))
+                        break;
+                    else
+                    {
+                        currentState = groundStates.xPositionQuota;
+                        continue;
+                    }
+                case groundStates.xPositionQuota:
+                    break;
+                case groundStates.surroundingYLevels:
+                    break;
+                case groundStates.timeSinceLastGap:
+                    break;
+                case groundStates.destroyGround:
+                    /*this fires a raycast to find all objects at the current X position in the loop, starting from just above the highest
+                    possible Y position set in firstPass, uses vector2.down to fire directly downwards, at a length of just over the
+                    difference between highest and lowest Y to make sure it doesnt miss any objects, and returns all of these objects it
+                    finds as a struct*/
+                    RaycastHit2D[] objectsAtX = Physics2D.RaycastAll(new Vector2(i, firstPass.highestY + 1), Vector2.down, 
+                                                                    (MathF.Abs(firstPass.highestY - firstPass.lowestY) + 2));
 
-                //runs a loop to go through all objects stored in the struct to delete them
-                for (int j = 0; j < objectsAtX.Length; j++)
-                {
-                    Destroy(objectsAtX[j].collider.gameObject);     //uses the collider component of each object found 
-                                                                    //to access the gameObject and destroys it
-                }
-                lastGapX = i;   //set the X position of the last gap to be here
+                    //runs a loop to go through all objects stored in the struct to delete them
+                    for (int j = 0; j < objectsAtX.Length; j++)
+                    {
+                        Destroy(objectsAtX[j].collider.gameObject);     //uses the collider component of each object found 
+                                                                        //to access the gameObject and destroys it
+                    }
+
+                    lastGapX = i;   //update last gap position to be here
+                    break;
             }
-
-
-            //temp - use Markov Chains later
-           /* int randChoice = UnityEngine.Random.Range(0, 3);
-            if (randChoice == 1)
-            {
-                /*this fires a raycast to find all objects at the curernt X position in the loop, starting from just above the highest
-                possible Y position set in firstPass, uses vector2.down to fire directly downwards, at a length of just over the
-                difference between highest and lowest Y to make sure it doesnt miss any objects, and returns all of these objects it
-                finds as a struct*/
-               /* RaycastHit2D[] objectsAtX = Physics2D.RaycastAll(new Vector2(i, firstPass.highestY + 1), Vector2.down, 
-                                                                (MathF.Abs(firstPass.highestY - firstPass.lowestY) + 2));
-
-                //runs a loop to go through all objects stored in the struct to delete them
-                for (int j = 0; j < objectsAtX.Length; j++)
-                {
-                    Destroy(objectsAtX[j].collider.gameObject);     //uses the collider component of each object found 
-                                                                    //to access the gameObject and destroys it
-                }
-            }*/
         }
     }
 
@@ -107,7 +116,6 @@ public class TerrainPassTwoScript : MonoBehaviour
     {
 
     }
-
 
     //decide if ground should be destroyed
     private bool GroundMarkov()
@@ -214,5 +222,20 @@ public class TerrainPassTwoScript : MonoBehaviour
         }
 
         blocksSinceGap = currentX - lastGapX;   //simple calculation to find the last gap
+    }
+
+    private bool MoveStages(groundStates curState, float chance)
+    {
+        //get the chance of moving from the current stage to the next ((int)curState gets the current state's pos in enum)
+        float moveChances = probabilities[(int)curState, (int)curState + 1];
+
+        //get a random float to compare current chance to
+        float comparison = UnityEngine.Random.Range(0.0f, 1.0f);
+
+        //decide whether or not to progress (false means the ground stays, true means move to next stage then decide)
+        if (comparison < chance)
+            return true;
+        else
+           return false;
     }
 }
