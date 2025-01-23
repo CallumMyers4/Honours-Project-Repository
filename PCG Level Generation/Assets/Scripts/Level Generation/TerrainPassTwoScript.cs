@@ -16,8 +16,11 @@ public class TerrainPassTwoScript : MonoBehaviour
     //number of gaps been placed in a row, gap length limit, position of last gap, blocks since this position, blocks at
     //the same Y as block being checked
     private int consecutiveGaps = 0, gapsLimit = 4, lastGapX = 0, blocksSinceGap = 0, blocksAtCurY;
+
+    //number of blocks in current platform, platform length limit, platform level
+    private int consecutivePlatformBlocks = 0, platformLengthLimit = 4; float platformY = 0, groundY = 0;
     
-    //keep track of current state being checked
+    //keep track of current state being checked for gaps
     private enum groundStates
     {
         limit,  //is the gap too long?
@@ -27,16 +30,39 @@ public class TerrainPassTwoScript : MonoBehaviour
         destroyGround   //if this state is reached then return true to break ground at current pos
     }
 
-    //keep track of chance of moving to other states
-    private float[,] probabilities = new float[5, 5]
+    //keep track of current state being checked for platforms
+    private enum platformStates
     {
-        {1.0f, 0.0f, 0.0f, 0.0f, 0.0f},     //from limit to other states    
-        {0.0f, 0.0f, 0.0f, 0.0f, 0.0f},     //from xPos to other states
-        {0.0f, 0.0f, 0.0f, 0.0f, 0.0f},     //from YLevels to other states
-        {0.0f, 0.0f, 0.0f, 0.0f, 0.0f},     //from time between gaps to other states
+        heightCheck,    //is it high enough for a platform?
+        lengthCheck,    //is the platform still below the max length?
+        groundBelow,    //change the chance based on whether there is ground or a gap below
+        lengthChance,   //change the chance based on the current length of the platform
+        placePlatform   //if all checks pass then make a platform
+    }
+
+    //----------------------------------------------NOT IN USE CURRENTLY----------------------------------------------------
+    //I may use this section if i decide to make move chances vary for each stage (i.e. if i want some stages to be harder to pass than
+    //others) but for now it just works as a cumulative percentage chance
+    //keep track of chance of moving to other states
+    private float[,] groundProbabilities = new float[5, 5]
+    {
+        {0.0f, 1.0f, 0.0f, 0.0f, 0.0f},     //from limit to other states    
+        {0.0f, 0.0f, 1.0f, 0.0f, 0.0f},     //from xPos to other states
+        {0.0f, 0.0f, 0.0f, 1.0f, 0.0f},     //from YLevels to other states
+        {0.0f, 0.0f, 0.0f, 0.0f, 1.0f},     //from time between gaps to other states
         {0.0f, 0.0f, 0.0f, 0.0f, 0.0f}      //shouldnt move from destroy ground
     };
 
+    //keep track of chance of moving to other states
+    private float[,] platformProbabilities = new float[5, 5]
+    {
+        {0.0f, 1.0f, 0.0f, 0.0f, 0.0f},     //from heightCheck to other states    
+        {0.0f, 0.0f, 1.0f, 0.0f, 0.0f},     //from lengthCheck to other states
+        {0.0f, 0.0f, 0.0f, 1.0f, 0.0f},     //from groundBelow to other states
+        {0.0f, 0.0f, 0.0f, 0.0f, 1.0f},     //from lengthChance between gaps to other states
+        {0.0f, 0.0f, 0.0f, 0.0f, 0.0f}      //shouldnt move from placing
+    };
+    //-----------------------------------------------------------------------------------------------------------------------
     [SerializeField]
     public bool passTwoCompleted;   //tells next pass when to run
 
@@ -47,7 +73,7 @@ public class TerrainPassTwoScript : MonoBehaviour
         if (firstPass.passOneCompleted == true && passTwoCompleted == false)
         {
             MakeGaps();
-            MakePlatforms();
+            //MakePlatforms();  //NOT READY YET
             passTwoCompleted = true;
         }
     }
@@ -76,8 +102,7 @@ public class TerrainPassTwoScript : MonoBehaviour
                 switch (currentState)
                 {
                     case groundStates.limit:
-                    Debug.Log("Gaps: " + consecutiveGaps);
-                        if (consecutiveGaps == gapsLimit)
+                        if (consecutiveGaps >= gapsLimit)
                         {
                             blocksSinceGap++;
                             consecutiveGaps = 0;
@@ -172,7 +197,84 @@ public class TerrainPassTwoScript : MonoBehaviour
     //create platforms in the air
     private void MakePlatforms()
     {
+        platformStates currentState = platformStates.lengthCheck;
+        bool checkComplete = false;
 
+        //run through each position in the level (starting at the end of the initial platform, ending at the end of the level)
+        for (int i = firstPass.startPlatformLength; i < firstPass.endX; i++)
+        {
+            currentState = platformStates.lengthCheck;  //reset state at start of each block
+            checkComplete = false;
+            float progressChance = 0.6f;    //initial chance of progressing to next stage (start at 1 to guarentee passing stage
+                                            //1 so long as theres not too long a gap)
+            //start of Markovs
+            PlatformGroundChecks(i);  //pass in the current X value being checked to allow the Markov to change values
+
+            //uses an internal loop to get around C# requiring a continue statement and not just allowing a fall to the next state,
+            //which was causing it to skip iterations of the block checking
+            while (!checkComplete)
+            {
+                switch (currentState)
+                {
+                    case platformStates.heightCheck:
+                        //if starting a new platform find a new Y value to draw at by taking the Y value of the last ground block found
+                        //and adding 3
+                        if (consecutiveGaps == 0)
+                        {
+                            platformY = groundY + 3.0f;
+                        }
+                        //otherwise run it as a check
+                        else
+                        {
+                            //if too close
+                            if (platformY < groundY + 3.0f)
+                            {
+                                //fail
+                                progressChance = 0.0f;
+                            }
+                            else
+                            {
+                                //pass
+                                progressChance = 1.0f;
+                            }
+                        }
+                        //if it fails to pass the stage check then end the chain and move on to the next loop,
+                        //otherwise fall through to next stage
+                        if (!MoveStagesPlatform(currentState, progressChance))
+                        {
+                            consecutivePlatformBlocks = 0;
+                            checkComplete = true;
+                            break;
+                        }
+                        else
+                        {
+                            currentState = platformStates.lengthCheck;
+                            continue;
+                        }
+
+                    case platformStates.lengthCheck:
+                        if (consecutivePlatformBlocks >= platformLengthLimit)
+                        {
+                            progressChance = 0;
+                        }
+                        else
+                        {
+                            progressChance = 1.0f;
+                        }
+                        if (!MoveStagesPlatform(currentState, progressChance))
+                        {
+                            consecutivePlatformBlocks = 0;
+                            checkComplete = true;
+                            break;
+                        }
+                        else
+                        {
+                            currentState = platformStates.groundBelow;
+                            continue;
+                        }
+                }
+            }
+        }
     }
 
     //decide if ground should be destroyed
@@ -234,10 +336,12 @@ public class TerrainPassTwoScript : MonoBehaviour
         RaycastHit2D currentGround = Physics2D.Raycast(new Vector2(currentX, firstPass.highestY + 1), Vector2.down, 
                                                                 (MathF.Abs(firstPass.highestY - firstPass.lowestY) + 2));
 
-        float currentY = currentGround.collider.gameObject.transform.position.y;    //store the Y value of the ground
+        //stored in the list of platform vars for now, was previously exclusive to this function but saves rewriting code to create
+        //a second function to check Y levels for platform checks
+        groundY = currentGround.collider.gameObject.transform.position.y;    //store the Y value of the ground
 
-        float checkGroundY = 10000; //y pos of ground to be checked (start at high number so it does not accidentally add a +1 when there
-                                    //is no ground)
+        float checkGroundY = 10000; //y pos of ground to be checked (start at high number so it does not accidentally add a +1 to
+                                    //ground at different level when when there is no ground)
 
         //runs over all the positions looking backwards from current X
         for (int i = currentX; i > currentX - positionsToCheckBack; i--)
@@ -246,14 +350,14 @@ public class TerrainPassTwoScript : MonoBehaviour
             RaycastHit2D checkGround = Physics2D.Raycast(new Vector2(i, firstPass.highestY + 1), Vector2.down, 
                                                                     (MathF.Abs(firstPass.highestY - firstPass.lowestY) + 2));
 
-            //if the ground exists, compare Y otherwise end search because it must be a gap (different Y)
+            //if the ground exists, compare Y otherwise end search because it must be a gap (+1 to different Y)
             if (checkGround.collider != null)                                                        
                 checkGroundY = checkGround.collider.gameObject.transform.position.y;
             else
                 continue;
             
             //if they are the same Y level then add 1 to the flat ground counter
-            if (checkGroundY == currentY)
+            if (checkGroundY == groundY)
                blocksAtCurY++;
             else
                 continue;   //if not then end the search since this is as far back as the flat ground goes
@@ -273,7 +377,7 @@ public class TerrainPassTwoScript : MonoBehaviour
                 continue;
             
             //if they are the same Y level then add 1 to the flat ground counter
-            if (checkGroundY == currentY)
+            if (checkGroundY == groundY)
                blocksAtCurY++;
             else
                 continue;   //if not then end the search since this is as far back as the flat ground goes
@@ -282,11 +386,34 @@ public class TerrainPassTwoScript : MonoBehaviour
         blocksSinceGap = currentX - lastGapX;   //simple calculation to find the last gap
     }
 
+    private void PlatformGroundChecks(int currentX)
+    {
+        //fires a raycast to get the ground at current X position (using Raycast instead of RaycastAll because we only need the
+        //first object hit since this will be the main ground)        
+        RaycastHit2D currentGround = Physics2D.Raycast(new Vector2(currentX, firstPass.highestY + 1), Vector2.down, 
+                                                                (MathF.Abs(firstPass.highestY - firstPass.lowestY) + 2));
+
+        groundY = currentGround.collider.gameObject.transform.position.y;    //store the Y value of the ground
+    }
     private bool MoveStages(groundStates curState, float chance)
     {
         //get the chance of moving from the current stage to the next ((int)curState gets the current state's pos in enum)
-        float moveChances = probabilities[(int)curState, (int)curState + 1];
+        float moveChances = groundProbabilities[(int)curState, (int)curState + 1];
+        Debug.Log("Move Chance:" + moveChances);
+        //get a random float to compare current chance to
+        float comparison = UnityEngine.Random.Range(0.0f, 1.0f);
 
+        //decide whether or not to progress (false means the ground stays, true means move to next stage then decide)
+        if (comparison < chance)
+            return true;
+        else
+           return false;
+    }
+
+    private bool MoveStagesPlatform(platformStates curState, float chance)
+    {
+        //get the chance of moving from the current stage to the next ((int)curState gets the current state's pos in enum)
+        float moveChances = platformProbabilities[(int)curState, (int)curState + 1];
         //get a random float to compare current chance to
         float comparison = UnityEngine.Random.Range(0.0f, 1.0f);
 
