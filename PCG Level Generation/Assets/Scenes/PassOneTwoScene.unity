@@ -237,7 +237,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startX: -9
-  endX: 100
+  endX: 200
   lowestY: -2
   highestY: 10
   maxHeightChange: 1
@@ -288,7 +288,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   firstPass: {fileID: 1190136719}
-  markov: {fileID: 1190136723}
   passTwoCompleted: 0
 --- !u!114 &1190136723
 MonoBehaviour:

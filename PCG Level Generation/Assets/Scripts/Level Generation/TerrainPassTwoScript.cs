@@ -64,7 +64,7 @@ public class TerrainPassTwoScript : MonoBehaviour
         {
             currentState = groundStates.limit;  //reset state at start of each block
             checkComplete = false;
-            float progressChance = 1.0f;    //initial chance of progressing to next stage (start at 1 to guarentee passing stage
+            float progressChance = 0.6f;    //initial chance of progressing to next stage (start at 1 to guarentee passing stage
                                             //1 so long as theres not too long a gap)
             //start of Markovs
             AdjustGroundValues(i);  //pass in the current X value being checked to allow the Markov to change values
@@ -108,12 +108,12 @@ public class TerrainPassTwoScript : MonoBehaviour
                         //increase chance based on how flat ground is
                         for (int j = 0; j < blocksAtCurY; j++)
                         {
-                            progressChance += 0.02f;
+                            progressChance += 0.08f;
                         }
                         //this decreases the chance based on how many blocks are at a different Y
                         for (int j = 0; j < (positionsToCheckForward + positionsToCheckBack) - blocksAtCurY; j++)
                         {
-                            progressChance -= 0.1f;
+                            progressChance -= 0.15f;
                         }
                         if (!MoveStages(currentState, progressChance))
                         {
@@ -129,8 +129,8 @@ public class TerrainPassTwoScript : MonoBehaviour
                         }
 
                     case groundStates.timeSinceLastGap:
-                        progressChance += blocksSinceGap * 0.05f;   //increase chance as gaps get further apart
-                        progressChance += consecutiveGaps * 0.1f;    //increase chance if already a gap
+                        progressChance += blocksSinceGap * 0.01f;   //increase chance as gaps get further apart
+                        progressChance += consecutiveGaps * 0.5f;    //increase chance if already a gap
                         if (!MoveStages(currentState, progressChance))
                         {
                             blocksSinceGap++;
