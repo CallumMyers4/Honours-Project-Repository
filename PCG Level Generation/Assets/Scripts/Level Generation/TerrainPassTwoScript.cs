@@ -208,7 +208,7 @@ public class TerrainPassTwoScript : MonoBehaviour
             float progressChance = 0.6f;    //initial chance of progressing to next stage (start at 1 to guarentee passing stage
                                             //1 so long as theres not too long a gap)
             //start of Markovs
-            PlatformGroundChecks(i);  //pass in the current X value being checked to allow the Markov to change values
+            AdjustGroundValues(i);  //pass in the current X value being checked to allow the Markov to change values
 
             //uses an internal loop to get around C# requiring a continue statement and not just allowing a fall to the next state,
             //which was causing it to skip iterations of the block checking
@@ -390,10 +390,10 @@ public class TerrainPassTwoScript : MonoBehaviour
     {
         //fires a raycast to get the ground at current X position (using Raycast instead of RaycastAll because we only need the
         //first object hit since this will be the main ground)        
-        RaycastHit2D currentGround = Physics2D.Raycast(new Vector2(currentX, firstPass.highestY + 1), Vector2.down, 
+        RaycastHit2D groundInDistance = Physics2D.Raycast(new Vector2(currentX, firstPass.highestY + 1), Vector2.down, 
                                                                 (MathF.Abs(firstPass.highestY - firstPass.lowestY) + 2));
 
-        groundY = currentGround.collider.gameObject.transform.position.y;    //store the Y value of the ground
+        //groundY = currentGround.collider.gameObject.transform.position.y;    //store the Y value of the ground
     }
     private bool MoveStages(groundStates curState, float chance)
     {
