@@ -13,3 +13,11 @@ https://docs.unity3d.com/6000.0/Documentation/ScriptReference/RaycastHit2D.html 
 https://github.com/chriscore/MarkovSharp - C# Markov Chains in VS
 https://nickmcd.me/2019/10/30/markov-chains-for-procedural-buildings/ - Markov in Unity (Nick's blog)
 https://www.sbgames.org/sbgames2018/files/papers/ComputacaoShort/188123.pdf - Markov in Unity (Thesis)
+
+
+------------------------------------------------DEVELOPMENT-----------------------------------------------------------------------------
+- Need to work out why so many gaps are only 1 long, and edit params to try to avoid 1 block of ground between gaps (make a 
+    minimum number of blocks before a new gap can begin, as well as the time affecting chance?)
+- Character controller is still hvaving some movement issues especially when jumping, looks hitbox related
+- Character is too wide to fall through 1 block gaps, need to either make sprite smaller or make gaps have a min of 2 blocks
+----------------------------------------------------------------------------------------------------------------------------------------
