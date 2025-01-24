@@ -257,7 +257,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fddc40c1bbf3c3d4ea7547a31285d25d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scale: 30
+  scale: 20
   seed: 0
   noiseGenerated: 0
 --- !u!4 &1190136721
@@ -288,6 +288,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   firstPass: {fileID: 1190136719}
+  platformTile: {fileID: 6372034140923359723, guid: 20bc0e9ab70f865419ae0d7c81f0c2af, type: 3}
   passTwoCompleted: 0
 --- !u!114 &1190136723
 MonoBehaviour:
