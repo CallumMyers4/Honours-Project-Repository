@@ -31,7 +31,6 @@ public class BatMovementScript : MonoBehaviour
     {
         if (flyLeft)
         {
-            Debug.Log("Going left");
             if (transform.position.x  > spawnPoint.x - distance)
             {
                 transform.position = Vector3.MoveTowards(transform.position, new Vector2(spawnPoint.x - distance, spawnPoint.y),
@@ -45,7 +44,6 @@ public class BatMovementScript : MonoBehaviour
         }
         else
         {
-            Debug.Log("Going right");
             if (transform.position.x  < spawnPoint.x + distance)
             {
                 transform.position = Vector3.MoveTowards(transform.position, new Vector2(spawnPoint.x + distance, spawnPoint.y),
