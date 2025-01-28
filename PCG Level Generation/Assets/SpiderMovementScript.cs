@@ -47,6 +47,7 @@ public class SpiderMovementScript : MonoBehaviour
     bool CheckIfSafe(int direction)
     {
         //fire one raycast to check 1 block ahead on X, and all the way down on Y (1 block ahead)
+        //if in future i dont want spider coming off platform, change 100.f in hitY to 1 and it will stay on platform too
         RaycastHit2D hitX = Physics2D.Raycast(new Vector2(transform.position.x + direction, transform.position.y), Vector2.zero, 1.0f);
         RaycastHit2D hitY = Physics2D.Raycast(new Vector2(transform.position.x + direction, transform.position.y), Vector2.down, 100.0f);
 
