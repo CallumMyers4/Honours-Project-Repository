@@ -21,6 +21,7 @@ public class TerrainPassTwoScript : MonoBehaviour
 
     //number of blocks in current platform, platform length limit, platform level
     private int consecutivePlatformBlocks = 0, platformLengthLimit = 4; float platformY = 0, groundY = 0;
+    public float platformIncrease = 3.0f;
     //checks if there is ground at the current pos being checked
     private bool groundBelow;
     
@@ -221,7 +222,7 @@ public class TerrainPassTwoScript : MonoBehaviour
                         //if starting a new platform find a new Y value to draw at by taking the Y value of the last ground block found
                         //and adding 3
                         if (consecutivePlatformBlocks == 0)
-                            platformY = groundY + 3.0f;
+                            platformY = groundY + platformIncrease;
                         /////////-----------------------------This may be a TEMP ELSE------------------------------------------
                         //guarentees all platforms are min 2 wide
                         else if (consecutivePlatformBlocks == 1)
@@ -233,7 +234,7 @@ public class TerrainPassTwoScript : MonoBehaviour
                         else
                         {
                             //if too close
-                            if (platformY < groundY + 3.0f)
+                            if (platformY < groundY + platformIncrease)
                             {
                                 //fail
                                 progressChance = 0.0f;

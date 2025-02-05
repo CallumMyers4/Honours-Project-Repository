@@ -18,7 +18,6 @@ https://www.sbgames.org/sbgames2018/files/papers/ComputacaoShort/188123.pdf - Ma
 ------------------------------------------------DEVELOPMENT-----------------------------------------------------------------------------
 - Need to work out why so many gaps are only 1 long, and edit params to try to avoid 1 block of ground between gaps (make a 
     minimum number of blocks before a new gap can begin, as well as the time affecting chance?)
-- Character controller is still hvaving some movement issues especially when jumping, looks hitbox related
 - Character is too wide to fall through 1 block gaps, need to either make sprite smaller or make gaps have a min of 2 blocks
 - Ground checks for gaps could be made more efficient with a raycast firing sideways to check forward/back to check how flat ground is? Maybe?
 - Platform height needs to be adjusted to ensure player can both fit under and jump onto them

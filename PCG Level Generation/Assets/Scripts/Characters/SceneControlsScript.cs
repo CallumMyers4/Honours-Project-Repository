@@ -21,5 +21,9 @@ public class PlayerControlsScript : MonoBehaviour
         {
             SceneManager.LoadScene("PassOneTwoScene");
         }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            SceneManager.LoadScene("PassOneTwoThreeScene");
+        }
     }
 }
