@@ -180,7 +180,11 @@ public class EnemyPassThreeScript : MonoBehaviour
                     */
 
                     case EnemyStates.spawnEnemy:
-                        Instantiate(enemyChoice, new Vector3(i, groundY), Quaternion.identity);
+                        if (enemyChoice == bat)
+                            Instantiate(enemyChoice, new Vector3(i, groundY + batHeight), Quaternion.identity);
+                        else
+                            Instantiate(enemyChoice, new Vector3(i, groundY + 1), Quaternion.identity);
+
                         lastEnemyBlocks = 0;  //reset time counter
                         checkComplete = true;
                         break;
@@ -339,6 +343,41 @@ public class EnemyPassThreeScript : MonoBehaviour
 
     private bool WormCheck()
     {
+        WormStates currentState = WormStates.groundCheck;   
+        
+        //distance to check forward/back (later this could be calculated from the flight path length in bat's script)
+        bool check = false;
+        int distanceAhead = 2, distanceBack = 2;
+
+        while (!check)
+        {
+            switch (currentState)
+            {
+            case WormStates.groundCheck:
+                //if ground is below then continue to next state, else fail
+                if (groundBelow)
+                {
+                    currentState = WormStates.heightChance;
+                    continue;
+                }
+                else
+                {
+                    return false;
+                }
+
+            case WormStates.heightChance:
+                //add to current chance based on how close to min the ground is
+                float progressChance = 0.02f;
+                progressChance += (1 - ((groundY - firstPass.lowestY) / (firstPass.highestY - firstPass.lowestY)));
+
+                //check against move stages function
+                if (!MoveStages(progressChance))
+                    return false;
+                else
+                    return true;
+            }
+        }
+
         return false;
     }
 }
