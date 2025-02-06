@@ -3,7 +3,12 @@ guid: c9ede74aa6481c147808d054f1d3e5f5
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - firstPass: {instanceID: 0}
+  - secondPass: {instanceID: 0}
+  - bat: {fileID: 8672499537765796465, guid: 8bc236b1ae72961458681df3d695ab4a, type: 3}
+  - spider: {fileID: 3402908415587748972, guid: 24fe6bdb94436d64d987336cca864226, type: 3}
+  - worm: {fileID: 7061660227708461533, guid: 06d20b0111da9d2499c1fb3dd1b62f62, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

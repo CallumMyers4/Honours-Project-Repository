@@ -236,7 +236,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19083e4bab808a54e8abb5808e30d3c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startX: -9
+  startX: 0
   endX: 200
   lowestY: -2
   highestY: 10
@@ -289,6 +289,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   firstPass: {fileID: 1190136719}
   platformTile: {fileID: 6372034140923359723, guid: 20bc0e9ab70f865419ae0d7c81f0c2af, type: 3}
+  platformIncrease: 3
   passTwoCompleted: 0
 --- !u!114 &1190136723
 MonoBehaviour:
@@ -326,7 +327,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4558096929911834103, guid: 96de7420b8cac304db5e5d8c3e58de98, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -5.32
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4558096929911834103, guid: 96de7420b8cac304db5e5d8c3e58de98, type: 3}
       propertyPath: m_LocalPosition.y

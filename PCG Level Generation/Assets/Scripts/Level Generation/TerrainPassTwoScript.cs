@@ -113,7 +113,7 @@ public class TerrainPassTwoScript : MonoBehaviour
                         }
                         //if it fails to pass the stage check then end the chain and move on to the next loop,
                         //otherwise fall through to next stage
-                        if (!MoveStages(currentState, progressChance))
+                        if (!MoveStages(progressChance))
                         {
                             blocksSinceGap++;
                             consecutiveGaps = 0;
@@ -143,7 +143,7 @@ public class TerrainPassTwoScript : MonoBehaviour
                         {
                             progressChance -= 0.15f;
                         }
-                        if (!MoveStages(currentState, progressChance))
+                        if (!MoveStages(progressChance))
                         {
                             blocksSinceGap++;
                             consecutiveGaps = 0;
@@ -159,7 +159,7 @@ public class TerrainPassTwoScript : MonoBehaviour
                     case groundStates.timeSinceLastGap:
                         progressChance += blocksSinceGap * 0.01f;   //increase chance as gaps get further apart
                         progressChance += consecutiveGaps * 0.5f;    //increase chance if already a gap
-                        if (!MoveStages(currentState, progressChance))
+                        if (!MoveStages(progressChance))
                         {
                             blocksSinceGap++;
                             consecutiveGaps = 0;
@@ -247,7 +247,7 @@ public class TerrainPassTwoScript : MonoBehaviour
                         }
                         //if it fails to pass the stage check then end the chain and move on to the next loop,
                         //otherwise fall through to next stage
-                        if (!MoveStagesPlatform(currentState, progressChance))
+                        if (!MoveStagesPlatform(progressChance))
                         {
                             consecutivePlatformBlocks = 0;
                             checkComplete = true;
@@ -269,7 +269,7 @@ public class TerrainPassTwoScript : MonoBehaviour
                         {
                             progressChance = 1.0f;
                         }
-                        if (!MoveStagesPlatform(currentState, progressChance))
+                        if (!MoveStagesPlatform(progressChance))
                         {
                             consecutivePlatformBlocks = 0;
                             checkComplete = true;
@@ -287,7 +287,7 @@ public class TerrainPassTwoScript : MonoBehaviour
                             progressChance -= 0.8f;
                         else
                             progressChance += 0.5f;
-                        if (!MoveStagesPlatform(currentState, progressChance))
+                        if (!MoveStagesPlatform(progressChance))
                         {
                             consecutivePlatformBlocks = 0;
                             checkComplete = true;
@@ -302,7 +302,7 @@ public class TerrainPassTwoScript : MonoBehaviour
                     case platformStates.lengthChance:
                         //decreases chance by 1% for every platform block on current platform
                         progressChance -= 0.01f * consecutivePlatformBlocks;
-                        if (!MoveStagesPlatform(currentState, progressChance))
+                        if (!MoveStagesPlatform(progressChance))
                         {
                             consecutivePlatformBlocks = 0;
                             checkComplete = true;
@@ -392,10 +392,8 @@ public class TerrainPassTwoScript : MonoBehaviour
         blocksSinceGap = currentX - lastGapX;   //simple calculation to find the last gap
     }
 
-    private bool MoveStages(groundStates curState, float chance)
+    private bool MoveStages(float chance)
     {
-        //get the chance of moving from the current stage to the next ((int)curState gets the current state's pos in enum)
-        float moveChances = groundProbabilities[(int)curState, (int)curState + 1];
         //get a random float to compare current chance to
         float comparison = UnityEngine.Random.Range(0.0f, 1.0f);
 
@@ -406,10 +404,8 @@ public class TerrainPassTwoScript : MonoBehaviour
            return false;
     }
 
-    private bool MoveStagesPlatform(platformStates curState, float chance)
+    private bool MoveStagesPlatform(float chance)
     {
-        //get the chance of moving from the current stage to the next ((int)curState gets the current state's pos in enum)
-        float moveChances = platformProbabilities[(int)curState, (int)curState + 1];
         //get a random float to compare current chance to
         float comparison = UnityEngine.Random.Range(0.0f, 1.0f);
 

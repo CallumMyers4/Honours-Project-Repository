@@ -13,10 +13,39 @@ public class EnemyPassThreeScript : MonoBehaviour
     [SerializeField]
     private TerrainPassTwoScript secondPass;    //access second pass
     [SerializeField]
-    private GameObject bat, spider, worm;
+    private GameObject bat, spider, worm;   //enemy prefabs
     public bool passThreeCompleted;   //tells next pass when to run
     private float groundY;  //height of ground at pos being checked
     private bool groundBelow, platformBelow;   //whether currently checking a ground pos or gap
+
+    //enemy check states
+    private enum EnemyStates
+    {
+        edgeCheck,  //do not spawn too close to start/end
+        timeSinceEnemies,   //increase chance the longer without an enemy
+        chooseEnemy,    //spin 1-3 to choose which enemy to attempt
+        chooseAgain,    //if one enemy fails, try another
+        spawnEnemy,     //spawn the appropriate enemy
+        cancel  //try again elsewhere if all 3 fail
+    }
+    private enum BatStates
+    {
+        pathCheck,  //ensure flight path is not blocked
+        platformChance  //lower chance over platforms
+    }
+
+    private enum SpiderStates
+    {
+        groundCheck,    //ensures there is not a gap
+        flatCheck   //check if there is enough flat ground nearby
+    }
+
+    private enum WormStates
+    {
+        groundCheck,    //ensures there is not a gap (will also check if on a platform here)
+        heightChance    //increase spawn chance lower in the level
+        
+    }
 
     // Update is called once per frame
     void Update()
@@ -156,7 +185,7 @@ public class EnemyPassThreeScript : MonoBehaviour
         }
     }
 
-     private void CheckGround(int currentX)
+    private void CheckGround(int currentX)
     {     
         //fires a raycast to get the ground at current X position (using Raycast instead of RaycastAll because we only need the
         //first object hit since this will be the main ground)        
@@ -187,5 +216,20 @@ public class EnemyPassThreeScript : MonoBehaviour
             platformBelow = false;
             Debug.Log("No ground detected at x = " + currentX);
         }
+    }
+
+    private bool BatCheck()
+    {
+        return false;
+    }
+
+    private bool SpiderCheck()
+    {
+        return false;
+    }
+
+    private bool WormCheck()
+    {
+        return false;
     }
 }
