@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 345129440097990231}
   - component: {fileID: 5906587090906470166}
   - component: {fileID: 8743667151783972033}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Worm Sprite Sheet_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -116,7 +116,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4070110194405613474}
   - component: {fileID: 1607263512200055262}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Worm Sprite Sheet_39
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -200,7 +200,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3561600819023411737}
   - component: {fileID: -2336143084375620468}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Worm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -239,7 +239,7 @@ BoxCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2

@@ -110,7 +110,7 @@ public class EnemyPassThreeScript : MonoBehaviour
                         }
 
                     case EnemyStates.timeSinceEnemies:
-                        progressChance += lastEnemyBlocks * 0.1f;  //adds a 10% chance to pass per block since enemy
+                        progressChance += lastEnemyBlocks * 0.02f;  //adds a 10% chance to pass per block since enemy
                         if (!MoveStages(progressChance))
                         {
                             Debug.Log("Failed. Progress chance:" + progressChance);
@@ -131,7 +131,7 @@ public class EnemyPassThreeScript : MonoBehaviour
                     if (!BatCheck(i))
                     {
                         enemyChoice = spider;
-                        if (!SpiderCheck())
+                        if (!SpiderCheck(i))
                         {
                             enemyChoice = worm;
 
@@ -272,9 +272,9 @@ public class EnemyPassThreeScript : MonoBehaviour
                     }
                 }
 
-            //if theres a platform then chance = 40%, else = 60%
+            //if theres a platform then chance = 20%, else = 40%
             case BatStates.platformChance:
-                float progressChance = 0.6f;
+                float progressChance = 0.4f;
                 if (platformBelow)
                     progressChance -= 0.2f;
 
