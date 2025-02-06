@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using Microsoft.Unity.VisualStudio.Editor;
 using Unity.VisualScripting;
 using UnityEditor;
@@ -18,6 +19,7 @@ public class EnemyPassThreeScript : MonoBehaviour
     private GameObject enemyChoice;     //stores the current enemy selected by the markov
     public bool passThreeCompleted;   //tells next pass when to run
     private float groundY;  //height of ground at pos being checked
+    private float batHeight = 4;    //distance above ground to spawn bat
     private bool groundBelow, platformBelow;   //whether currently checking a ground pos or gap
 
     //enemy check states
@@ -101,6 +103,7 @@ public class EnemyPassThreeScript : MonoBehaviour
                         }
                         else
                         {
+                            progressChance = 0.05f; //start other checks with a 5% chance
                             currentState = EnemyStates.timeSinceEnemies;
                             continue;
                         }
@@ -109,12 +112,14 @@ public class EnemyPassThreeScript : MonoBehaviour
                         progressChance += lastEnemyBlocks * 0.1f;  //adds a 10% chance to pass per block since enemy
                         if (!MoveStages(progressChance))
                         {
+                            Debug.Log("Failed. Progress chance:" + progressChance);
                             lastEnemyBlocks++;
                             checkComplete = true;
                             break;
                         }
                         else
                         {
+                            Debug.Log("Passed. Progress chance:" + progressChance);
                             currentState = EnemyStates.chooseEnemy;
                             continue;
                         }
@@ -122,7 +127,7 @@ public class EnemyPassThreeScript : MonoBehaviour
                     case EnemyStates.chooseEnemy:
                     //----------------------------------------------This needs to be random--------------------------------------------
                     enemyChoice = bat;
-                    if (!BatCheck())
+                    if (!BatCheck(i))
                     {
                         enemyChoice = spider;
                         if (!SpiderCheck())
@@ -225,18 +230,67 @@ public class EnemyPassThreeScript : MonoBehaviour
            return false;
     }
 
-    private bool BatCheck()
+    private bool BatCheck(int spawnX)
     {
-        return false;
+        BatStates currentState = BatStates.pathCheck;   
+        
+        //distance to check forward/back (later this could be calculated from the flight path length in bat's script)
+        bool check = false;
+        int distanceAhead = 2, distanceBack = 2;
+
+        while (!check)
+        {
+            switch (currentState)
+            {
+            case BatStates.pathCheck:
+                //fire a raycast right to check for blocks
+                RaycastHit2D checkForGround = Physics2D.Raycast(new Vector2(spawnX, groundY + batHeight), Vector2.right, distanceAhead);
+
+                //if the ground exists, end check, else check left
+                if (checkForGround.collider != null)  
+                {
+                    return false; //fail check
+                }                                                      
+                else
+                {
+                    //now use -.right to go left, and if it still passes then move on
+                    checkForGround = Physics2D.Raycast(new Vector2(spawnX, groundY + batHeight), -Vector2.right, distanceBack);
+                    if (checkForGround.collider != null)  
+                    {
+                        return false;   //fail check
+                    }   
+                    else
+                    {
+                        //passed - move to next stage
+                        currentState = BatStates.platformChance;
+                        continue;
+                    }
+                }
+
+            //if theres a platform then chance = 40%, else = 60%
+            case BatStates.platformChance:
+                float progressChance = 0.6f;
+                if (platformBelow)
+                    progressChance -= 0.2f;
+
+                if (!MoveStages(progressChance))
+                    return false;
+                else
+                    return true;
+        }
+        }
+
+
+        return true;
     }
 
     private bool SpiderCheck()
     {
-        return false;
+        return true;
     }
 
     private bool WormCheck()
     {
-        return false;
+        return true;
     }
 }
