@@ -207,8 +207,7 @@ public class TerrainPassTwoScript : MonoBehaviour
         {
             currentState = platformStates.heightCheck;  //reset state at start of each block
             checkComplete = false;
-            float progressChance = 0.6f;    //initial chance of progressing to next stage (start at 1 to guarentee passing stage
-                                            //1 so long as theres not too long a gap)
+            float progressChance = 0.6f;    //initial chance of progressing to next stage
             //start of Markovs
             AdjustGroundValues(i);  //pass in the current X value being checked to allow the Markov to change values
 

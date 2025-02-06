@@ -10,7 +10,7 @@ public class TerrainPassOneScript : MonoBehaviour
     [SerializeField]
     public int lowestY, highestY;    //top and bottom constraints of the level height
     [SerializeField]
-    public int maxHeightChange, startPlatformLength;
+    public int maxHeightChange, startPlatformLength, endPlatformLength = 4;
     [SerializeField]
     public PerlinNoiseGeneratorScript noiseGenerator;  //reference to script for generating noise
     [SerializeField]

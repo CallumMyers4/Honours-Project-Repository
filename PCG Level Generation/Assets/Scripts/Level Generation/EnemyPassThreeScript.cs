@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.Unity.VisualStudio.Editor;
 using Unity.VisualScripting;
 using UnityEditor;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 
 public class EnemyPassThreeScript : MonoBehaviour
@@ -14,6 +15,7 @@ public class EnemyPassThreeScript : MonoBehaviour
     private TerrainPassTwoScript secondPass;    //access second pass
     [SerializeField]
     private GameObject bat, spider, worm;   //enemy prefabs
+    private GameObject enemyChoice;     //stores the current enemy selected by the markov
     public bool passThreeCompleted;   //tells next pass when to run
     private float groundY;  //height of ground at pos being checked
     private bool groundBelow, platformBelow;   //whether currently checking a ground pos or gap
@@ -60,89 +62,99 @@ public class EnemyPassThreeScript : MonoBehaviour
     //spawn enemies
     private void SpawnEnemies()
     {
-        //currentState = first state
-        //bool checkComplete = false;
+        EnemyStates currentState = EnemyStates.edgeCheck;
+        bool checkComplete = false;
+        int lastEnemyBlocks = 0;    //blocks since an enemy was last spawned
 
         //run through each position in the level (starting at the end of the initial platform, ending at the end of the level)
         for (int i = firstPass.startPlatformLength; i < firstPass.endX; i++)
         {
-            //currentState = platformStates.heightCheck;  //reset state at start of each block
-            //checkComplete = false;
-            //float progressChance = 0.6f;    //initial chance of progressing to next stage (start at 1 to guarentee passing stage
-                                            //1 so long as theres not too long a gap)
-            //start of Markovs
-            CheckGround(i);  //pass in the current X value being checked to allow the Markov to change values
+            currentState = EnemyStates.edgeCheck;  //reset state at start of each block
+            checkComplete = false;
+            float progressChance = 0.5f;    //initial chance of progressing to next stage
 
-            //uses an internal loop to get around C# requiring a continue statement and not just allowing a fall to the next state,
-            //which was causing it to skip iterations of the block checking
-            /*while (!checkComplete)
+            //start of Markovs
+            CheckGround(i);  //pass in the current X value being checked to see whether there is ground
+
+            while (!checkComplete)
             {
                 switch (currentState)
                 {
-                    case platformStates.heightCheck:
-                        //if starting a new platform find a new Y value to draw at by taking the Y value of the last ground block found
-                        //and adding 3
-                        if (consecutivePlatformBlocks == 0)
-                            platformY = groundY + 3.0f;
-                        /////////-----------------------------This may be a TEMP ELSE------------------------------------------
-                        //guarentees all platforms are min 2 wide
-                        else if (consecutivePlatformBlocks == 1)
+                    case EnemyStates.edgeCheck:
+                        //check if we are too close to edges of the level
+                        if (i < (firstPass.startX + firstPass.startPlatformLength) ||
+                                i > firstPass.endX - firstPass.endPlatformLength)
                         {
-                            currentState = platformStates.placePlatform;
-                            break;
+                            progressChance = 0.0f;
                         }
-                        //otherwise run it as a check
                         else
                         {
-                            //if too close
-                            if (platformY < groundY + 3.0f)
-                            {
-                                //fail
-                                progressChance = 0.0f;
-                            }
-                            else
-                            {
-                                //pass
-                                progressChance = 1.0f;
-                            }
+                           progressChance = 1.0f;
                         }
                         //if it fails to pass the stage check then end the chain and move on to the next loop,
                         //otherwise fall through to next stage
-                        if (!MoveStagesPlatform(currentState, progressChance))
+                        if (!MoveStages(progressChance))
                         {
-                            consecutivePlatformBlocks = 0;
+                            lastEnemyBlocks++;
                             checkComplete = true;
                             break;
                         }
                         else
                         {
-                            currentState = platformStates.lengthCheck;
+                            currentState = EnemyStates.timeSinceEnemies;
                             continue;
                         }
 
-                    case platformStates.lengthCheck:
-                        //ensure a new platform block wont go over the max limit
-                        if (consecutivePlatformBlocks >= platformLengthLimit)
+                    case EnemyStates.timeSinceEnemies:
+                        progressChance += lastEnemyBlocks * 0.1f;  //adds a 10% chance to pass per block since enemy
+                        if (!MoveStages(progressChance))
                         {
-                            progressChance = 0;
-                        }
-                        else
-                        {
-                            progressChance = 1.0f;
-                        }
-                        if (!MoveStagesPlatform(currentState, progressChance))
-                        {
-                            consecutivePlatformBlocks = 0;
+                            lastEnemyBlocks++;
                             checkComplete = true;
                             break;
                         }
                         else
                         {
-                            currentState = platformStates.groundBelow;
+                            currentState = EnemyStates.chooseEnemy;
                             continue;
                         }
 
-                    case platformStates.groundBelow:
+                    case EnemyStates.chooseEnemy:
+                    //----------------------------------------------This needs to be random--------------------------------------------
+                    enemyChoice = bat;
+                    if (!BatCheck())
+                    {
+                        enemyChoice = spider;
+                        if (!SpiderCheck())
+                        {
+                            enemyChoice = worm;
+
+                            if (!WormCheck())
+                            {
+                                lastEnemyBlocks++;
+                                checkComplete = true;
+                                break;
+                            }
+                            else
+                            {
+                                currentState = EnemyStates.spawnEnemy;
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            currentState = EnemyStates.spawnEnemy;
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        currentState = EnemyStates.spawnEnemy;
+                        continue;
+                    }
+                       
+                    //will probably need when properly coding the choosing section of the chain
+                    /*case EnemyStates.chooseAgain:
                         //increases the chance if there is no ground found, or decreases if not over a gap
                         if (groundBelow)
                             progressChance -= 0.8f;
@@ -159,29 +171,15 @@ public class EnemyPassThreeScript : MonoBehaviour
                             currentState = platformStates.lengthChance;
                             continue;
                         }
+                    */
 
-                    case platformStates.lengthChance:
-                        //decreases chance by 1% for every platform block on current platform
-                        progressChance -= 0.01f * consecutivePlatformBlocks;
-                        if (!MoveStagesPlatform(currentState, progressChance))
-                        {
-                            consecutivePlatformBlocks = 0;
-                            checkComplete = true;
-                            break;
-                        }
-                        else
-                        {
-                            currentState = platformStates.placePlatform;
-                            continue;
-                        }
-
-                    case platformStates.placePlatform:
-                        Instantiate(platformTile, new Vector3(i, platformY), Quaternion.identity);
-                        consecutivePlatformBlocks++;  //add to the consecutive gap counter
+                    case EnemyStates.spawnEnemy:
+                        Instantiate(enemyChoice, new Vector3(i, groundY), Quaternion.identity);
+                        lastEnemyBlocks = 0;  //reset time counter
                         checkComplete = true;
                         break;
                 }
-            }*/
+            }
         }
     }
 
@@ -192,30 +190,39 @@ public class EnemyPassThreeScript : MonoBehaviour
         RaycastHit2D currentGround = Physics2D.Raycast(new Vector2(currentX, firstPass.highestY + secondPass.platformIncrease + 1), Vector2.down, 
                                                                 (MathF.Abs(firstPass.highestY - firstPass.lowestY) + secondPass.platformIncrease + 1));
 
-        //stored in the list of platform vars for now, was previously exclusive to this function but saves rewriting code to create
-        //a second function to check Y levels for platform checks
+        //checks for ground at current X
         if (currentGround.collider != null)
         {
             groundY = currentGround.collider.gameObject.transform.position.y;    //store the Y value of the ground
             groundBelow = true;     //used in platforms to affect chance based on whether there is ground found below
 
+            //since platform prefab attaches a child, this is an easy way to check if the ground tile is a platform or not
             if (currentGround.collider.transform.childCount > 0)
             {
                 platformBelow = true;
-                Debug.Log("Platform detected at x = " + currentX);
             }
             else
             {
                 platformBelow = false;
-                Debug.Log("Ground detected at x = " + currentX);
             }
         }
         else
         {
             groundBelow = false;
             platformBelow = false;
-            Debug.Log("No ground detected at x = " + currentX);
         }
+    }
+
+    private bool MoveStages(float chance)
+    {
+        //get a random float to compare current chance to
+        float comparison = UnityEngine.Random.Range(0.0f, 1.0f);
+
+        //decide whether or not to progress (false means the ground stays, true means move to next stage then decide)
+        if (comparison < chance)
+            return true;
+        else
+           return false;
     }
 
     private bool BatCheck()
