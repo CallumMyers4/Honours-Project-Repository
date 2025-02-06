@@ -6,6 +6,7 @@ using Microsoft.Unity.VisualStudio.Editor;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.PackageManager.Requests;
+using UnityEditor.ShaderGraph;
 using UnityEngine;
 
 public class EnemyPassThreeScript : MonoBehaviour
@@ -277,20 +278,67 @@ public class EnemyPassThreeScript : MonoBehaviour
                     return false;
                 else
                     return true;
-        }
+            }
         }
 
-
-        return true;
+        return false;   //should never be reached but editor was complaining that not all paths return a value
     }
 
-    private bool SpiderCheck()
+    private bool SpiderCheck(int spawnX)
     {
-        return true;
+        SpiderStates currentState = SpiderStates.groundCheck;   
+        
+        //distance to check forward/back (later this could be calculated from the flight path length in bat's script)
+        bool check = false;
+        int distanceAhead = 2, distanceBack = 2;
+
+        while (!check)
+        {
+            switch (currentState)
+            {
+            case SpiderStates.groundCheck:
+                //if ground is below then continue to next state, else fail
+                if (groundBelow)
+                {
+                    currentState = SpiderStates.flatCheck;
+                    continue;
+                }
+                else
+                {
+                    return false;
+                }
+
+            case SpiderStates.flatCheck:
+                //fire a raycast right to check for blocks
+                RaycastHit2D checkForGround = Physics2D.Raycast(new Vector2(spawnX, groundY + batHeight), Vector2.right, distanceAhead);
+
+                //if the ground exists, end check, else check left
+                if (checkForGround.collider != null)  
+                {
+                    return false; //fail check
+                }                                                      
+                else
+                {
+                    //now use -.right to go left, and if it still passes then move on
+                    checkForGround = Physics2D.Raycast(new Vector2(spawnX, groundY + batHeight), -Vector2.right, distanceBack);
+                    if (checkForGround.collider != null)  
+                    {
+                        return false;   //fail check
+                    }   
+                    else
+                    {
+                        //passed - spawn (this one has no chance modifier)
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     private bool WormCheck()
     {
-        return true;
+        return false;
     }
 }
