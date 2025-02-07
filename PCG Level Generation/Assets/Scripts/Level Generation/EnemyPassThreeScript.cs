@@ -21,7 +21,7 @@ public class EnemyPassThreeScript : MonoBehaviour
     private GameObject enemyChoice;     //stores the current enemy selected by the markov
     public bool passThreeCompleted;   //tells next pass when to run
     private float groundY;  //height of ground at pos being checked
-    private float batHeight = 4;    //distance above ground to spawn bat
+    private float batHeight = 4, wormHeight = 1.64f;    //distance above ground to spawn bat, distance to move worm down
     private bool groundBelow, platformBelow;   //whether currently checking a ground pos or gap
 
     //enemy check states
@@ -126,7 +126,7 @@ public class EnemyPassThreeScript : MonoBehaviour
                     case EnemyStates.chooseEnemy:
 
                     //put enemies into a list
-                    List<GameObject> enemies = new List<GameObject> { bat, spider, worm };
+                    List<GameObject> enemies = new List<GameObject> { bat, spider };
 
                     //assigns each object in the list a random float from 0-1 then orders in the list according to the value returned
                     enemies = enemies.OrderBy(randFlt => UnityEngine.Random.value).ToList();  
@@ -149,12 +149,12 @@ public class EnemyPassThreeScript : MonoBehaviour
                             currentState = EnemyStates.spawnEnemy;
                             break;
                         }
-                        else if (enemyChoice == worm && WormCheck(i))
+                        /*else if (enemyChoice == worm && WormCheck(i))
                         {
                             Debug.Log("Worm spawning.");
                             currentState = EnemyStates.spawnEnemy;
                             break;
-                        }
+                        }*/
                     }
 
                     //go to cancel if no enemy was found, otherwise cycle through while loop again to reach enemyStates.spawnenemy
@@ -174,9 +174,13 @@ public class EnemyPassThreeScript : MonoBehaviour
                         {        
                             Instantiate(enemyChoice, new Vector3(i, groundY + batHeight), Quaternion.identity);
                         }
-                        else
+                        else if (enemyChoice == spider)
                         {                           
                             Instantiate(enemyChoice, new Vector3(i, groundY + 1), Quaternion.identity);
+                        }
+                        else
+                        {
+                            Instantiate(enemyChoice, new Vector3(i, groundY + wormHeight), Quaternion.identity);
                         }
 
                         lastEnemyBlocks = 0;  //reset time counter
