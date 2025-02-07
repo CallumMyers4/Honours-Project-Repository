@@ -8,6 +8,7 @@ using UnityEditor;
 using UnityEditor.PackageManager.Requests;
 using UnityEditor.ShaderGraph;
 using UnityEngine;
+using System.Linq;
 
 public class EnemyPassThreeScript : MonoBehaviour
 {
@@ -29,7 +30,6 @@ public class EnemyPassThreeScript : MonoBehaviour
         edgeCheck,  //do not spawn too close to start/end
         timeSinceEnemies,   //increase chance the longer without an enemy
         chooseEnemy,    //spin 1-3 to choose which enemy to attempt
-        chooseAgain,    //if one enemy fails, try another
         spawnEnemy,     //spawn the appropriate enemy
         cancel  //try again elsewhere if all 3 fail
     }
@@ -110,84 +110,84 @@ public class EnemyPassThreeScript : MonoBehaviour
                         }
 
                     case EnemyStates.timeSinceEnemies:
-                        progressChance += lastEnemyBlocks * 0.02f;  //adds a 10% chance to pass per block since enemy
+                        progressChance += lastEnemyBlocks * 0.05f;  //adds a 5% chance to pass per block since enemy
                         if (!MoveStages(progressChance))
                         {
-                            Debug.Log("Failed. Progress chance:" + progressChance);
                             lastEnemyBlocks++;
                             checkComplete = true;
                             break;
                         }
                         else
                         {
-                            Debug.Log("Passed. Progress chance:" + progressChance);
                             currentState = EnemyStates.chooseEnemy;
                             continue;
                         }
 
                     case EnemyStates.chooseEnemy:
-                    //----------------------------------------------This needs to be random--------------------------------------------
-                    enemyChoice = bat;
-                    if (!BatCheck(i))
-                    {
-                        enemyChoice = spider;
-                        if (!SpiderCheck(i))
-                        {
-                            enemyChoice = worm;
 
-                            if (!WormCheck())
-                            {
-                                lastEnemyBlocks++;
-                                checkComplete = true;
-                                break;
-                            }
-                            else
-                            {
-                                currentState = EnemyStates.spawnEnemy;
-                                continue;
-                            }
-                        }
-                        else
+                    //put enemies into a list
+                    List<GameObject> enemies = new List<GameObject> { bat, spider, worm };
+
+                    //assigns each object in the list a random float from 0-1 then orders in the list according to the value returned
+                    enemies = enemies.OrderBy(randFlt => UnityEngine.Random.value).ToList();  
+
+                    //cycles through list
+                    for (int j = 0; j < enemies.Count; j++)
+                    {
+                        enemyChoice = enemies[j];
+
+                        //gets the current enemy being checked, runs the check Markov function for appropriate enemy, and either spawns or moves on according to return
+                        if (enemyChoice == bat && BatCheck(i))
                         {
+                            Debug.Log("Bat spawning.");
                             currentState = EnemyStates.spawnEnemy;
-                            continue;
+                            break;
                         }
+                        else if (enemyChoice == spider && SpiderCheck(i))
+                        {
+                            Debug.Log("Spider spawning.");
+                            currentState = EnemyStates.spawnEnemy;
+                            break;
+                        }
+                        else if (enemyChoice == worm && WormCheck(i))
+                        {
+                            Debug.Log("Worm spawning.");
+                            currentState = EnemyStates.spawnEnemy;
+                            break;
+                        }
+                    }
+
+                    //go to cancel if no enemy was found, otherwise cycle through while loop again to reach enemyStates.spawnenemy
+                    if (currentState != EnemyStates.spawnEnemy)
+                    {
+                        currentState = EnemyStates.cancel;
+                        continue;
                     }
                     else
                     {
-                        currentState = EnemyStates.spawnEnemy;
                         continue;
                     }
-                       
-                    //will probably need when properly coding the choosing section of the chain
-                    /*case EnemyStates.chooseAgain:
-                        //increases the chance if there is no ground found, or decreases if not over a gap
-                        if (groundBelow)
-                            progressChance -= 0.8f;
-                        else
-                            progressChance += 0.5f;
-                        if (!MoveStagesPlatform(currentState, progressChance))
-                        {
-                            consecutivePlatformBlocks = 0;
-                            checkComplete = true;
-                            break;
-                        }
-                        else
-                        {
-                            currentState = platformStates.lengthChance;
-                            continue;
-                        }
-                    */
 
                     case EnemyStates.spawnEnemy:
+                        //two seperate spawn locations since bat should be higher than the ground
                         if (enemyChoice == bat)
+                        {        
                             Instantiate(enemyChoice, new Vector3(i, groundY + batHeight), Quaternion.identity);
+                        }
                         else
+                        {                           
                             Instantiate(enemyChoice, new Vector3(i, groundY + 1), Quaternion.identity);
+                        }
 
                         lastEnemyBlocks = 0;  //reset time counter
-                        checkComplete = true;
+                        checkComplete = true;   //exit while loop
                         break;
+                        
+                    //move on to next block if no enemy can be spawned here
+                    case EnemyStates.cancel:
+                    lastEnemyBlocks++;
+                    checkComplete = true;
+                    break;
                 }
             }
         }
@@ -294,7 +294,7 @@ public class EnemyPassThreeScript : MonoBehaviour
         
         //distance to check forward/back (later this could be calculated from the flight path length in bat's script)
         bool check = false;
-        int distanceAhead = 2, distanceBack = 2;
+        int distanceAhead = 3, distanceBack = 3;
 
         while (!check)
         {
@@ -341,29 +341,37 @@ public class EnemyPassThreeScript : MonoBehaviour
         return false;
     }
 
-    private bool WormCheck()
+    private bool WormCheck(int spawnX)
     {
         WormStates currentState = WormStates.groundCheck;   
         
         //distance to check forward/back (later this could be calculated from the flight path length in bat's script)
         bool check = false;
-        int distanceAhead = 2, distanceBack = 2;
 
         while (!check)
         {
             switch (currentState)
             {
             case WormStates.groundCheck:
-                //if ground is below then continue to next state, else fail
-                if (groundBelow)
-                {
-                    currentState = WormStates.heightChance;
-                    continue;
-                }
-                else
+                //if there is no ground, or there is a platform, worm cant spawn
+                if (!groundBelow || platformBelow)
                 {
                     return false;
                 }
+
+                //check to make sure it wont spawn on edges of ground (makes some level sections impossible if jumping over a gap right before)
+                bool groundAhead = Physics2D.Raycast(new Vector2(spawnX + 1, groundY), Vector2.down, 1f);
+                bool groundBehind = Physics2D.Raycast(new Vector2(spawnX - 1, groundY), Vector2.down, 1f);
+
+                //fail if on the edge
+                if (!groundAhead || !groundBehind)
+                {
+                    return false;
+                }
+
+                //move on if the ground is suitable
+                currentState = WormStates.heightChance;
+                continue;
 
             case WormStates.heightChance:
                 //add to current chance based on how close to min the ground is

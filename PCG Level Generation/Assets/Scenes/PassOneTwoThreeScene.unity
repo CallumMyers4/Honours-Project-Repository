@@ -242,6 +242,7 @@ MonoBehaviour:
   highestY: 10
   maxHeightChange: 1
   startPlatformLength: 5
+  endPlatformLength: 4
   noiseGenerator: {fileID: 1190136720}
   groundPrefab: {fileID: 6372034140923359723, guid: 987641aa8e9db5c408f9f71a155ec6d7, type: 3}
   passOneCompleted: 0
@@ -317,6 +318,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 463997004606036812, guid: 96de7420b8cac304db5e5d8c3e58de98, type: 3}
+      propertyPath: orthographic size
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 1021253546546727735, guid: 96de7420b8cac304db5e5d8c3e58de98, type: 3}
       propertyPath: m_GravityScale
       value: 3
