@@ -19,8 +19,8 @@ public class TerrainPassTwoScript : MonoBehaviour
     //the same Y as block being checked
     private int consecutiveGaps = 0, gapsLimit = 4, lastGapX = 0, blocksSinceGap = 0, blocksAtCurY;
 
-    //number of blocks in current platform, platform length limit, platform level
-    private int consecutivePlatformBlocks = 0, platformLengthLimit = 4; float platformY = 0, groundY = 0;
+    //number of blocks in current platform, platform length limit, min blocks before a gap, platform level, ground level at current X
+    private int consecutivePlatformBlocks = 0, platformLengthLimit = 4, minGround = 3; float platformY = 0, groundY = 0;
     public float platformIncrease = 3.0f;
     //checks if there is ground at the current pos being checked
     private bool groundBelow;
@@ -28,6 +28,7 @@ public class TerrainPassTwoScript : MonoBehaviour
     //keep track of current state being checked for gaps
     private enum groundStates
     {
+        groundLength,   //prevent 1 block long ground sections
         limit,  //is the gap too long?
         xPositionQuota,  //how far along in the level is being checked compared to the quota
         surroundingYLevels,     //how much does the Y level change in the area?
@@ -85,13 +86,13 @@ public class TerrainPassTwoScript : MonoBehaviour
     //create gaps in the ground
     private void MakeGaps()
     {
-        groundStates currentState = groundStates.limit;
+        groundStates currentState = groundStates.groundLength;
         bool checkComplete = false;
 
         //run through each position in the level (starting at the end of the initial platform, ending at the end of the level)
-        for (int i = firstPass.startPlatformLength; i < firstPass.endX; i++)
+        for (int i = firstPass.startPlatformLength; i < firstPass.endX - firstPass.endPlatformLength; i++)
         {
-            currentState = groundStates.limit;  //reset state at start of each block
+            currentState = groundStates.groundLength;  //reset state at start of each block
             checkComplete = false;
             float progressChance = 0.6f;    //initial chance of progressing to next stage (start at 1 to guarentee passing stage
                                             //1 so long as theres not too long a gap)
@@ -104,6 +105,22 @@ public class TerrainPassTwoScript : MonoBehaviour
             {
                 switch (currentState)
                 {
+                    //makes sure there is always a min amount of ground before a block
+                    case groundStates.groundLength:
+                    //if the ground is too short, end loop, otherwise go to limit check
+                    if (blocksSinceGap < minGround)
+                    {
+                            blocksSinceGap++;
+                            consecutiveGaps = 0;
+                            checkComplete = true;
+                            break;
+                    }
+                    else
+                    {
+                            currentState = groundStates.limit;
+                            continue;
+                    }
+
                     case groundStates.limit:
                         if (consecutiveGaps >= gapsLimit)
                         {

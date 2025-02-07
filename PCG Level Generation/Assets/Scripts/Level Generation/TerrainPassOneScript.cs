@@ -43,7 +43,7 @@ public class TerrainPassOneScript : MonoBehaviour
             int groundHeight;
 
             //sets ground height to 0 until a flat starting platform has been generated (prevents player spawning inside a tile)
-            if (x < startPlatformLength)
+            if (x < startPlatformLength || x > endX - endPlatformLength)
             {
                 groundHeight = 1;
             }

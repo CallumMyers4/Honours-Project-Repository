@@ -70,7 +70,7 @@ public class EnemyPassThreeScript : MonoBehaviour
         int lastEnemyBlocks = 0;    //blocks since an enemy was last spawned
 
         //run through each position in the level (starting at the end of the initial platform, ending at the end of the level)
-        for (int i = firstPass.startPlatformLength; i < firstPass.endX; i++)
+        for (int i = firstPass.startPlatformLength; i < firstPass.endX - firstPass.endPlatformLength; i++)
         {
             currentState = EnemyStates.edgeCheck;  //reset state at start of each block
             checkComplete = false;
@@ -149,6 +149,7 @@ public class EnemyPassThreeScript : MonoBehaviour
                             currentState = EnemyStates.spawnEnemy;
                             break;
                         }
+                        //---------------------------------------------Removed for now--------------------------------
                         /*else if (enemyChoice == worm && WormCheck(i))
                         {
                             Debug.Log("Worm spawning.");

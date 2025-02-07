@@ -6,7 +6,7 @@ public class PlayerMovementScript : MonoBehaviour
 {
     //Variables
     private float moveSpeed = 15;    //the horizontal move speed of player
-    private float jumpHeight = 600;     //the force applied when player jumps
+    private float jumpHeight = 700;     //the force applied when player jumps
     [SerializeField]
     private bool inAir = false;     //whether or not player is in the air
     private float moveDir;  //the horizontal direction to move
@@ -68,17 +68,23 @@ public class PlayerMovementScript : MonoBehaviour
     }
 
 
-    // OnCollisionEnter2D triggers when the rigidbody detects a collision with another GameObject
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.CompareTag("Ground"))
+        if (other.gameObject.CompareTag("Ground") && other.gameObject.transform.position.y < playerRB.position.y)
         {
             inAir = false;
         }
     } 
 
+    private void OnCollisionStay2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Ground") && other.gameObject.transform.position.y < playerRB.position.y)
+        {
+            inAir = false;
+        }
+    }
 
-    // OnCollisionExit2D triggers when the rigidbody detects the rigibody has moved outwith a collision zone
+
     private void OnCollisionExit2D(Collision2D other)
     {
         if (other.gameObject.CompareTag("Ground"))
