@@ -48,8 +48,12 @@ public class SpiderMovementScript : MonoBehaviour
     {
         //fire one raycast to check 1 block ahead on X, and all the way down on Y (1 block ahead)
         //if in future i dont want spider coming off platform, change 100.f in hitY to 1 and it will stay on platform too
-        RaycastHit2D hitX = Physics2D.Raycast(new Vector2(transform.position.x + direction, transform.position.y), Vector2.zero, 1.0f);
-        RaycastHit2D hitY = Physics2D.Raycast(new Vector2(transform.position.x + direction, transform.position.y), Vector2.down, 100.0f);
+
+        //check for higher ground ahead
+        RaycastHit2D hitX = Physics2D.Raycast(new Vector2(transform.position.x + direction, transform.position.y), Vector2.right * direction, 0.01f);
+
+        //check for ground slightly ahead and below (to avoid falling off)
+        RaycastHit2D hitY = Physics2D.Raycast(new Vector2(transform.position.x + direction, transform.position.y - 0.5f), Vector2.down, 5.0f);
 
         //if finds a block in the way or a gap then tell spider not to move
         if ((hitX.collider != null && hitX.collider.gameObject.CompareTag("Ground")) || hitY.collider == null)
