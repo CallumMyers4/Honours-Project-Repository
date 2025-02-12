@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Microsoft.Unity.VisualStudio.Editor;
 using Unity.VisualScripting;
+#if UNITY_EDITOR
+using Microsoft.Unity.VisualStudio.Editor;
+#endif
 using UnityEditor;
 using UnityEngine;
 

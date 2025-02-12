@@ -242,8 +242,11 @@ MonoBehaviour:
   highestY: 10
   maxHeightChange: 1
   startPlatformLength: 5
+  endPlatformLength: 4
   noiseGenerator: {fileID: 1190136720}
   groundPrefab: {fileID: 6372034140923359723, guid: 987641aa8e9db5c408f9f71a155ec6d7, type: 3}
+  endZonePrefab: {fileID: 6372034140923359723, guid: 26e203d5844b63a4ba727f364559e783, type: 3}
+  deathZonePrefab: {fileID: 6372034140923359723, guid: 35b87be42aba1c64a950b3b5515228bf, type: 3}
   passOneCompleted: 0
 --- !u!114 &1190136720
 MonoBehaviour:
@@ -289,6 +292,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   firstPass: {fileID: 1190136719}
   platformTile: {fileID: 6372034140923359723, guid: 20bc0e9ab70f865419ae0d7c81f0c2af, type: 3}
+  platformIncrease: 3
   passTwoCompleted: 0
 --- !u!114 &1190136723
 MonoBehaviour:

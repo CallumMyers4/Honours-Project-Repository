@@ -2,11 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
+#if UNITY_EDITOR
 using Microsoft.Unity.VisualStudio.Editor;
+#endif
 using Unity.VisualScripting;
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.PackageManager.Requests;
 using UnityEditor.ShaderGraph;
+#endif
 using UnityEngine;
 using System.Linq;
 
@@ -297,7 +301,7 @@ public class EnemyPassThreeScript : MonoBehaviour
         
         //distance to check forward/back (later this could be calculated from the flight path length in bat's script)
         bool check = false;
-        int distanceAhead = 3, distanceBack = 3;
+        int distanceAhead = 4, distanceBack = 4;
 
         while (!check)
         {

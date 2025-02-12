@@ -1,0 +1,12 @@
+- Open PCG Level Generation.exe
+- View the controls page to see controls
+	- The link to the survey is also available on that page
+- Play through a few levels for as long as you like and see if you can find any bugs or general issues
+- If possible, screenshots would be great however fully optional
+	- If on Windows, you can use Windows logo + prntscrn
+	- You can also use Windows + shift + r to screen record, and press again to end
+- If you do take any screenshots or videos, please email them to 2102549@uad.ac.uk with the subject [PCG] Bug Feedback
+
+- Survey link: https://forms.office.com/Pages/ResponsePage.aspx?id=uhrLqo_zDkGRU8FqAOv0zIoh24ArNJlPrAvDbJSdOlBUOFNDQU5CSFE1WVowUkY5WVo4TVYyTjZFRi4u
+
+- Any other questions let me know. Thanks!
