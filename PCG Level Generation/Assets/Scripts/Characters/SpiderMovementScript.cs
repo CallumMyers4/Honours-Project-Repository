@@ -71,7 +71,7 @@ public class SpiderMovementScript : MonoBehaviour
         RaycastHit2D hitY = Physics2D.Raycast(new Vector2(transform.position.x + direction, transform.position.y - 0.5f), Vector2.down, 5.0f);
 
         //if finds a block in the way or a gap then tell spider not to move
-        if ((hitX.collider != null && hitX.collider.gameObject.CompareTag("Ground")) || hitY.collider == null)
+        if ((hitX.collider != null && hitX.collider.gameObject.CompareTag("Ground")) || hitY.collider == null || hitY.collider.gameObject.CompareTag("LoseZone"))
         {
             return false;
         }

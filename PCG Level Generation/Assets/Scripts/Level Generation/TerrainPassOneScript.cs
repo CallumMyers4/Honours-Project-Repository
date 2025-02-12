@@ -40,7 +40,7 @@ public class TerrainPassOneScript : MonoBehaviour
         //run through each x position in the level
         for (int x = 0; x < levelWidth; x++)
         {
-            //Instantiate(deathZonePrefab, new Vector3(x + startX, lowestY - 1, 0), Quaternion.identity, transform);
+            Instantiate(deathZonePrefab, new Vector3(x + startX, lowestY - 1, 0), Quaternion.identity, transform);
 
             int groundHeight;
 

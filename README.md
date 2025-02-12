@@ -17,6 +17,7 @@ https://www.sbgames.org/sbgames2018/files/papers/ComputacaoShort/188123.pdf - Ma
 
 ------------------------------------------------DEVELOPMENT-----------------------------------------------------------------------------
 - Need to work out why so many gaps are only 1 long, and edit params to try to avoid 1 block of ground between gaps (make a 
-    minimum number of blocks before a new gap can begin, as well as the time affecting chance?)
+    minimum number of blocks before a new gap can begin, as well as the time affecting chance?) - fixed
 - Platform height needs to be adjusted to ensure player can both fit under and jump onto them - fixed
+Could add in a jump mechanic for the spider if it detects ground at a higher level, may help fix spiders being stuck in small spaces?
 ----------------------------------------------------------------------------------------------------------------------------------------
