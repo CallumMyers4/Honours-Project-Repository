@@ -14,7 +14,7 @@ public class PlayerMovementScript : MonoBehaviour
     private Animator playerAnimator;    //access to the animator component of the player
     private SpriteRenderer playerRenderer;  //access to the sprite renderer component of the player
     private Vector2 spawnPoint; //store the players start point in the level
-    public bool dead;
+    public bool dead, win;  //vars for winning or dying
 
     // Start is called before the first frame update
     void Start()

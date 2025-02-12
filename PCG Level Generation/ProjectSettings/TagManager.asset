@@ -7,6 +7,8 @@ TagManager:
   - Ground
   - Platform
   - Enemy
+  - WinZone
+  - LoseZone
   layers:
   - Default
   - TransparentFX

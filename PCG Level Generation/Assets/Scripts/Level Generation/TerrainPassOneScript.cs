@@ -14,7 +14,7 @@ public class TerrainPassOneScript : MonoBehaviour
     [SerializeField]
     public PerlinNoiseGeneratorScript noiseGenerator;  //reference to script for generating noise
     [SerializeField]
-    private GameObject groundPrefab;
+    private GameObject groundPrefab, endZonePrefab, deathZonePrefab;
     int previousHeight = 0;     //stores the height of the last column generated
     public bool passOneCompleted = false;   //checks when pass is completed
 
@@ -40,12 +40,25 @@ public class TerrainPassOneScript : MonoBehaviour
         //run through each x position in the level
         for (int x = 0; x < levelWidth; x++)
         {
+            Instantiate(deathZonePrefab, new Vector3(x + startX, lowestY - 1, 0), Quaternion.identity, transform);
+
             int groundHeight;
 
             //sets ground height to 0 until a flat starting platform has been generated (prevents player spawning inside a tile)
             if (x < startPlatformLength || x > endX - endPlatformLength)
             {
                 groundHeight = 1;
+
+                if (x > endX - endPlatformLength)
+                {
+                    for (int i = x; i < endX; i++)
+                    {
+                        for (int j = 1; j < highestY; j++)
+                        {
+                            Instantiate(endZonePrefab, new Vector3(x + startX, j, 0), Quaternion.identity, transform);
+                        }
+                    }
+                }
             }
             else
             {
