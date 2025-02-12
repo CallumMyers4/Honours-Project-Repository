@@ -71,6 +71,7 @@ public class TerrainPassTwoScript : MonoBehaviour
     //-----------------------------------------------------------------------------------------------------------------------
     [SerializeField]
     public bool passTwoCompleted;   //tells next pass when to run
+    private groundStates currentState = groundStates.groundLength;
 
     // Update is called once per frame
     void Update()
@@ -86,7 +87,6 @@ public class TerrainPassTwoScript : MonoBehaviour
     //create gaps in the ground
     private void MakeGaps()
     {
-        groundStates currentState = groundStates.groundLength;
         bool checkComplete = false;
 
         //run through each position in the level (starting at the end of the initial platform, ending at the end of the level)
@@ -108,7 +108,7 @@ public class TerrainPassTwoScript : MonoBehaviour
                     //makes sure there is always a min amount of ground before a block
                     case groundStates.groundLength:
                     //if the ground is too short, end loop, otherwise go to limit check
-                    if (blocksSinceGap < minGround)
+                    if (blocksSinceGap < minGround && consecutiveGaps == 0)
                     {
                             blocksSinceGap++;
                             consecutiveGaps = 0;
@@ -158,7 +158,7 @@ public class TerrainPassTwoScript : MonoBehaviour
                         //this decreases the chance based on how many blocks are at a different Y
                         for (int j = 0; j < (positionsToCheckForward + positionsToCheckBack) - blocksAtCurY; j++)
                         {
-                            progressChance -= 0.15f;
+                            progressChance -= 0.1f;
                         }
                         if (!MoveStages(progressChance))
                         {
@@ -174,8 +174,8 @@ public class TerrainPassTwoScript : MonoBehaviour
                         }
 
                     case groundStates.timeSinceLastGap:
-                        progressChance += blocksSinceGap * 0.01f;   //increase chance as gaps get further apart
-                        progressChance += consecutiveGaps * 0.5f;    //increase chance if already a gap
+                        progressChance += blocksSinceGap * 0.05f;   //increase chance as gaps get further apart
+                        progressChance += consecutiveGaps * 0.6f;    //increase chance if already a gap
                         if (!MoveStages(progressChance))
                         {
                             blocksSinceGap++;
@@ -200,7 +200,8 @@ public class TerrainPassTwoScript : MonoBehaviour
                         //runs a loop to go through all objects stored in the struct to delete them
                         for (int k = 0; k < objectsAtX.Length; k++)
                         {
-                            Destroy(objectsAtX[k].collider.gameObject);     //uses the collider component of each object found 
+                            if (objectsAtX[k].collider.gameObject.CompareTag("Ground"))
+                                Destroy(objectsAtX[k].collider.gameObject);     //uses the collider component of each object found 
                                                                             //to access the gameObject and destroys it
                         }
                         consecutiveGaps++;  //add to the consecutive gap counter
@@ -417,7 +418,9 @@ public class TerrainPassTwoScript : MonoBehaviour
         if (comparison < chance)
             return true;
         else
-           return false;
+        {
+            return false;
+        }
     }
 
     private bool MoveStagesPlatform(float chance)

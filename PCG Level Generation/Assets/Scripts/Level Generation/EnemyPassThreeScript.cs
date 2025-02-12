@@ -139,13 +139,11 @@ public class EnemyPassThreeScript : MonoBehaviour
                         //gets the current enemy being checked, runs the check Markov function for appropriate enemy, and either spawns or moves on according to return
                         if (enemyChoice == bat && BatCheck(i))
                         {
-                            Debug.Log("Bat spawning.");
                             currentState = EnemyStates.spawnEnemy;
                             break;
                         }
                         else if (enemyChoice == spider && SpiderCheck(i))
                         {
-                            Debug.Log("Spider spawning.");
                             currentState = EnemyStates.spawnEnemy;
                             break;
                         }

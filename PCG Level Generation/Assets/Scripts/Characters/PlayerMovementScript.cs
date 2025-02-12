@@ -78,11 +78,14 @@ public class PlayerMovementScript : MonoBehaviour
             inAir = false;
         }
         
-        if (other.gameObject.CompareTag("Enemy"))
+        if (other.gameObject.CompareTag("Enemy") || other.gameObject.CompareTag("LoseZone"))
         {
             dead = true;
             transform.position = new Vector3(spawnPoint.x, spawnPoint.y, transform.position.z);
         }
+
+        if (other.gameObject.CompareTag("WinZone"))
+            win = true;
     } 
 
     private void OnCollisionStay2D(Collision2D other)
@@ -100,7 +103,8 @@ public class PlayerMovementScript : MonoBehaviour
         {
             inAir = true;
         }
-        else if (other.gameObject.CompareTag("Enemy"))
+        
+        if (other.gameObject.CompareTag("Enemy") || other.gameObject.CompareTag("LoseZone"))
         {
             dead = false;
         }

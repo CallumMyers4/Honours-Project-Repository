@@ -56,7 +56,6 @@ public class SpiderMovementScript : MonoBehaviour
         if (playerRef.dead)
         {
             transform.position = spawnPoint;
-            Debug.Log("Going back");
         }
     }
 
