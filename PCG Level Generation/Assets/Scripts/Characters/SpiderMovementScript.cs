@@ -9,9 +9,18 @@ public class SpiderMovementScript : MonoBehaviour
     //reference to sprite renderer for flipping
     [SerializeField]
     SpriteRenderer spriteRenderer;
-
+    private PlayerMovementScript playerRef; //reference to the player to know when dead
+    private Vector3 spawnPoint; //store spawn point
     //decide which way to move
     bool moveLeft = true;
+
+    void Start()
+    {
+        spawnPoint = transform.position;
+        
+        playerRef = FindObjectOfType<PlayerMovementScript>();   //find player
+
+    }
 
     // Update is called once per frame
     void Update()
@@ -41,6 +50,13 @@ public class SpiderMovementScript : MonoBehaviour
                 spriteRenderer.flipX = false;
                 moveLeft = true;
             }
+        }
+
+        //reset if player dies
+        if (playerRef.dead)
+        {
+            transform.position = spawnPoint;
+            Debug.Log("Going back");
         }
     }
 

@@ -9,7 +9,7 @@ public class PerlinNoiseGeneratorScript : MonoBehaviour
     [SerializeField]
     private float scale = 30.0f;
     [SerializeField]
-    private int seed = 0;   //in later iteration there will be an option for user input, but random for now
+    public int seed = 0;   //in later iteration there will be an option for user input, but random for now
     private Texture2D perlinNoise;
     public bool noiseGenerated = false; //check when noise generation is completed
 

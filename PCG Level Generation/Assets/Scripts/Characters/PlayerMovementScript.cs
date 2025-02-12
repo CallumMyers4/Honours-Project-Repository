@@ -13,7 +13,8 @@ public class PlayerMovementScript : MonoBehaviour
     private Rigidbody2D playerRB;   //access to rigidbody component of the player
     private Animator playerAnimator;    //access to the animator component of the player
     private SpriteRenderer playerRenderer;  //access to the sprite renderer component of the player
-
+    private Vector2 spawnPoint; //store the players start point in the level
+    public bool dead;
 
     // Start is called before the first frame update
     void Start()
@@ -22,6 +23,9 @@ public class PlayerMovementScript : MonoBehaviour
         playerRB = GetComponent<Rigidbody2D>();     //assign the player's rigidbody component to the variable
         playerAnimator = GetComponent<Animator>();  //assign the player's animator component to the variable
         playerRenderer = GetComponent<SpriteRenderer>();  //assign the player's sprite renderer component to the variable
+
+        spawnPoint.x = transform.position.x;
+        spawnPoint.y = transform.position.y;
     }
 
 
@@ -30,7 +34,6 @@ public class PlayerMovementScript : MonoBehaviour
     {
         //Input
         moveDir = Input.GetAxis("Horizontal");  //get the player's input using the built in input values in the project settings
-
 
         //Animations
         playerAnimator.SetBool("midair", inAir);    //use jumping animation when not on the ground
@@ -74,6 +77,12 @@ public class PlayerMovementScript : MonoBehaviour
         {
             inAir = false;
         }
+        
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            dead = true;
+            transform.position = new Vector3(spawnPoint.x, spawnPoint.y, transform.position.z);
+        }
     } 
 
     private void OnCollisionStay2D(Collision2D other)
@@ -90,6 +99,10 @@ public class PlayerMovementScript : MonoBehaviour
         if (other.gameObject.CompareTag("Ground"))
         {
             inAir = true;
+        }
+        else if (other.gameObject.CompareTag("Enemy"))
+        {
+            dead = false;
         }
     } 
 }

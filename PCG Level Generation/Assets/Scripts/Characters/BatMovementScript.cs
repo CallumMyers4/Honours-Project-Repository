@@ -15,6 +15,7 @@ public class BatMovementScript : MonoBehaviour
     //reference to sprite renderer for flipping
     [SerializeField]
     SpriteRenderer spriteRenderer;
+    private PlayerMovementScript playerRef; //reference to the player to know when dead
 
     //decide which way to fly
     bool flyLeft = false;
@@ -24,6 +25,8 @@ public class BatMovementScript : MonoBehaviour
     {
         //set spawn point
         spawnPoint = transform.position;
+
+        playerRef = FindObjectOfType<PlayerMovementScript>();   //find player
     }
 
     // Update is called once per frame
@@ -54,6 +57,13 @@ public class BatMovementScript : MonoBehaviour
                 spriteRenderer.flipX = true;
                 flyLeft = true;
             }
+        }
+
+        //reset if player dies
+        if (playerRef.dead)
+        {
+            transform.position = spawnPoint;
+            Debug.Log("Going back");
         }
     }
 }
