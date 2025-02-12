@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+
 public class MainMenuManager : MonoBehaviour
 {
     [SerializeField]
@@ -30,5 +31,12 @@ public class MainMenuManager : MonoBehaviour
     public void ExitGame()
     {
         Application.Quit();
+    }
+
+    public void GoToSurvey()
+    {
+        string url = "https://forms.office.com/Pages/ResponsePage.aspx?id=uhrLqo_zDkGRU8FqAOv0zIoh24ArNJlPrAvDbJSdOlBUOFNDQU5CSFE1WVowUkY5WVo4TVYyTjZFRi4u";
+
+        Application.OpenURL(url); // Opens the link in the browser
     }
 }
