@@ -21,3 +21,5 @@ https://www.sbgames.org/sbgames2018/files/papers/ComputacaoShort/188123.pdf - Ma
 - Platform height needs to be adjusted to ensure player can both fit under and jump onto them - fixed
 Could add in a jump mechanic for the spider if it detects ground at a higher level, may help fix spiders being stuck in small spaces?
 ----------------------------------------------------------------------------------------------------------------------------------------
+
+https://thepeeps191.itch.io/spinning-coin - coin sprite
