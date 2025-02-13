@@ -223,7 +223,7 @@ public class TerrainPassTwoScript : MonoBehaviour
         bool checkComplete = false;
 
         //run through each position in the level (starting at the end of the initial platform, ending at the end of the level)
-        for (int i = firstPass.startPlatformLength; i < firstPass.endX; i++)
+        for (int i = firstPass.startPlatformLength; i < firstPass.endX - firstPass.endPlatformLength; i++)
         {
             currentState = platformStates.heightCheck;  //reset state at start of each block
             checkComplete = false;
@@ -352,6 +352,11 @@ public class TerrainPassTwoScript : MonoBehaviour
         //first object hit since this will be the main ground)        
         RaycastHit2D currentGround = Physics2D.Raycast(new Vector2(currentX, firstPass.highestY + 1), Vector2.down, 
                                                                 (MathF.Abs(firstPass.highestY - firstPass.lowestY) + 2));
+
+        if (!currentGround.collider.gameObject.CompareTag("Ground"))
+        {
+            currentGround = new RaycastHit2D(); //make hit null if it is not a ground object
+        }
 
         //stored in the list of platform vars for now, was previously exclusive to this function but saves rewriting code to create
         //a second function to check Y levels for platform checks
