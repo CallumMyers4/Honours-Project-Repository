@@ -146,8 +146,12 @@ public class CollectablesPassFourScript : MonoBehaviour
                         }
                     
                     case CoinStates.timeSinceCoin:
-                        progressChance += blocksSinceCoin * 0.05f;  //adds a 5% chance to pass per block since enemy
                         
+                        progressChance += blocksSinceCoin * 0.05f;  //adds a 5% chance to pass per block since enemy
+                       
+                        if (coinsInSet > 0)
+                            progressChance += 0.65f; // increase chance if a set has already began
+
                         //if it fails to pass the stage check then end the chain and move on to the next loop,
                         //otherwise fall through to next stage
                         if (!MoveStages(progressChance))
@@ -159,6 +163,7 @@ public class CollectablesPassFourScript : MonoBehaviour
                         }
                         else
                         {
+                            Debug.Log("Passed with " + coinsInSet + " coins in the set");
                             currentState = CoinStates.platformChance;
                             continue;
                         }
