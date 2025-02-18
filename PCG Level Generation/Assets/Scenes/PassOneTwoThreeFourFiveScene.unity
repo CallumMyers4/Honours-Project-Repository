@@ -488,6 +488,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 3961734674847322518, guid: 96de7420b8cac304db5e5d8c3e58de98, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4436073611158436031, guid: 96de7420b8cac304db5e5d8c3e58de98, type: 3}
       propertyPath: perlinScript
       value: 
