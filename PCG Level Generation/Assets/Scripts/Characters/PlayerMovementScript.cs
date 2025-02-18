@@ -15,6 +15,7 @@ public class PlayerMovementScript : MonoBehaviour
     private SpriteRenderer playerRenderer;  //access to the sprite renderer component of the player
     private Vector2 spawnPoint; //store the players start point in the level
     public bool dead, win;  //vars for winning or dying
+    public int coinsCollected = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -108,5 +109,15 @@ public class PlayerMovementScript : MonoBehaviour
         {
             dead = false;
         }
-    } 
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        
+        if (other.gameObject.CompareTag("Collectable"))
+        {
+            coinsCollected++;
+            Destroy(other.gameObject);
+        }
+    }
 }

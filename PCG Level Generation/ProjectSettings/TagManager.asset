@@ -9,6 +9,7 @@ TagManager:
   - Enemy
   - WinZone
   - LoseZone
+  - Collectable
   layers:
   - Default
   - TransparentFX
