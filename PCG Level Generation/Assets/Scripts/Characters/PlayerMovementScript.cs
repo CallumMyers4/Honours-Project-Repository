@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerMovementScript : MonoBehaviour
 {
@@ -33,6 +34,13 @@ public class PlayerMovementScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //temp value - change later (just here in case player somehow gets through lose zone)
+        if (transform.position.y < -10)
+        {
+            dead = true;
+            transform.position = new Vector3(spawnPoint.x, spawnPoint.y, transform.position.z);
+        }
+
         //Input
         moveDir = Input.GetAxis("Horizontal");  //get the player's input using the built in input values in the project settings
 
