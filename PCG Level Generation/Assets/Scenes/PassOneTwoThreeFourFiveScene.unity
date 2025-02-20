@@ -3029,6 +3029,8 @@ MonoBehaviour:
   firstPass: {fileID: 1190136719}
   platformTile: {fileID: 6372034140923359723, guid: 20bc0e9ab70f865419ae0d7c81f0c2af, type: 3}
   platformIncrease: 3
+  gapsMultiplier: 1
+  platformsMultiplier: 1
   passTwoCompleted: 0
 --- !u!114 &1190136723
 MonoBehaviour:
@@ -3048,6 +3050,7 @@ MonoBehaviour:
   spider: {fileID: 3402908415587748972, guid: 24fe6bdb94436d64d987336cca864226, type: 3}
   worm: {fileID: 7061660227708461533, guid: 06d20b0111da9d2499c1fb3dd1b62f62, type: 3}
   passThreeCompleted: 0
+  maxEnemies: 0
 --- !u!114 &1190136724
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3066,6 +3069,7 @@ MonoBehaviour:
   coin: {fileID: 5378018247500907298, guid: ff34bb369fdd9904bb85b67ebb8f562a, type: 3}
   totalCoins: 0
   passFourCompleted: 0
+  maxLevelCoins: 70
 --- !u!1 &1266790869
 GameObject:
   m_ObjectHideFlags: 0
@@ -3152,7 +3156,7 @@ MonoBehaviour:
   m_MinValue: 5
   m_MaxValue: 35
   m_WholeNumbers: 1
-  m_Value: 20
+  m_Value: 15
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -3598,8 +3602,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainPanel: {fileID: 946864024}
   winPanel: {fileID: 598813173}
+  parametersPanel: {fileID: 217347169}
   coinsCounterText: {fileID: 395552841}
   player: {fileID: 2102850574024312651}
+  perlin: {fileID: 1190136720}
+  firstPass: {fileID: 1190136719}
+  secondPass: {fileID: 1190136722}
+  thirdPass: {fileID: 1190136723}
   collectables: {fileID: 1190136724}
   lengthSlider: {fileID: 800732730}
   hillsSlider: {fileID: 1266790871}

@@ -32,6 +32,8 @@ public class CollectablesPassFourScript : MonoBehaviour
     private int yOffset = 1;    //distance from ground to spawn coin
     public bool passFourCompleted;  //keep track of when this script finishes
 
+    public int maxLevelCoins = 70;   //max number of coins per level (set in parameter UI)
+
     //coin check states
     private enum CoinStates
     {
@@ -163,7 +165,6 @@ public class CollectablesPassFourScript : MonoBehaviour
                         }
                         else
                         {
-                            Debug.Log("Passed with " + coinsInSet + " coins in the set");
                             currentState = CoinStates.platformChance;
                             continue;
                         }

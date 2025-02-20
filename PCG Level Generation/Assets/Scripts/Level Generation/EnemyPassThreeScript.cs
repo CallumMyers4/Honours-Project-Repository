@@ -27,6 +27,8 @@ public class EnemyPassThreeScript : MonoBehaviour
     private float groundY;  //height of ground at pos being checked
     private float batHeight = 4, wormHeight = 1.64f;    //distance above ground to spawn bat, distance to move worm down
     private bool groundBelow, platformBelow;   //whether currently checking a ground pos or gap
+    
+    public int maxEnemies;  //max enemies per level as set in parameters UI
 
     //enemy check states
     private enum EnemyStates

@@ -6,8 +6,8 @@ public class PerlinNoiseGeneratorScript : MonoBehaviour
 {
     private int width = 256, height = 256;
     private int xOffset, yOffset;   //used to randomise the position of the noise to create new levels
-    [SerializeField]
-    private float scale = 30.0f;
+    [HideInInspector]
+    public float scale = 20.0f;
     [SerializeField]
     public int seed = 0;   //in later iteration there will be an option for user input, but random for now
     private Texture2D perlinNoise;
@@ -21,7 +21,10 @@ public class PerlinNoiseGeneratorScript : MonoBehaviour
         xOffset = seed;
         yOffset = seed;
 
+        Debug.Log("Scale: " + scale);
         CreatePerlinNoise();    //populate noise texture
+
+        scale = GameObject.Find("Level Manager").GetComponent<GeneralLevelManagerScript>().hills;
 
         noiseGenerated = true;
     }

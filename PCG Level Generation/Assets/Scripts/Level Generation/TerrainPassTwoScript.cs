@@ -26,6 +26,8 @@ public class TerrainPassTwoScript : MonoBehaviour
     public float platformIncrease = 3.0f;
     //checks if there is ground at the current pos being checked
     private bool groundBelow;
+
+    public float gapsMultiplier = 1.0f, platformsMultiplier = 1.0f;
     
     //keep track of current state being checked for gaps
     private enum groundStates

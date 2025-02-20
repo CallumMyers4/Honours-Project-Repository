@@ -65,7 +65,6 @@ public class BatMovementScript : MonoBehaviour
         if (playerRef.dead)
         {
             transform.position = spawnPoint;
-            Debug.Log("Going back");
         }
     }
 }

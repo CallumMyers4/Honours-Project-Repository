@@ -6,7 +6,7 @@ public class TerrainPassOneScript : MonoBehaviour
 {
     //made all these public for now for easy access to next script, may change later
     [SerializeField]
-    public float startX, endX;     //start and end positions for the level
+    public float startX, endX = 200;     //start and end positions for the level
     [SerializeField]
     public int lowestY, highestY;    //top and bottom constraints of the level height
     [SerializeField]

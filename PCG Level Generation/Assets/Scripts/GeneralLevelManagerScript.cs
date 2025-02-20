@@ -4,19 +4,33 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Runtime.ExceptionServices;
 
 public class GeneralLevelManagerScript : MonoBehaviour
 {
-    public GameObject mainPanel, winPanel;
+    public GameObject mainPanel, winPanel, parametersPanel;
     public TMP_Text coinsCounterText;
     public PlayerMovementScript player;
+    public PerlinNoiseGeneratorScript perlin;
+    public TerrainPassOneScript firstPass;
+    public TerrainPassTwoScript secondPass;
+    public EnemyPassThreeScript thirdPass;
     public CollectablesPassFourScript collectables;
 
     public Slider lengthSlider, hillsSlider, gapsSlider, platformsSlider, enemiesSlider, coinsSlider;   //references to UI parameter sliders
-    // Start is called before the first frame update
-    void Start()
+    public float length, hills, gaps, platforms, enemies, coins;
+
+    public static GeneralLevelManagerScript thisScript;
+    public float perlinScale = 20.0f; // Default value
+
+    void Awake()
     {
-        
+            length = lengthSlider.value;
+            hills = hillsSlider.value;
+            gaps = gapsSlider.value;
+            platforms = platformsSlider.value;  
+            enemies = enemiesSlider.value;
+            coins = coinsSlider.value;
     }
 
     // Update is called once per frame
@@ -29,6 +43,7 @@ public class GeneralLevelManagerScript : MonoBehaviour
         }
         else
         {
+            Debug.Log("Perlin.scale: " + perlin.scale);
             coinsCounterText.SetText(player.coinsCollected.ToString() + "/" + collectables.totalCoins.ToString());
         }
     }
@@ -47,11 +62,20 @@ public class GeneralLevelManagerScript : MonoBehaviour
 
     public void GenerateLevel()
     {
-        Debug.Log("Length: " + lengthSlider.value);
-        Debug.Log("Hills: " + hillsSlider.value);
-        Debug.Log("Gaps: " + gapsSlider.value);
-        Debug.Log("Platforms: " + platformsSlider.value);
-        Debug.Log("Enemies: " + enemiesSlider.value);
-        Debug.Log("Coins: " + coinsSlider.value);
+        length = lengthSlider.value;
+        hills = hillsSlider.value;
+        gaps = gapsSlider.value;
+        platforms = platformsSlider.value;  
+        enemies = enemiesSlider.value;
+        coins = coinsSlider.value;
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        
+        lengthSlider.value = length;
+        hillsSlider.value = hills;
+        gapsSlider.value = gaps;
+        platformsSlider.value = platforms;  
+        enemiesSlider.value = enemies;
+        coinsSlider.value = coins;
     }
 }
