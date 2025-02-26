@@ -25,15 +25,31 @@ public class GeneralLevelManagerScript : MonoBehaviour
 
     void Awake()
     {
-            length = lengthSlider.value;
-            hills = hillsSlider.value;
-            gaps = gapsSlider.value;
-            platforms = platformsSlider.value;  
-            enemies = enemiesSlider.value;
-            coins = coinsSlider.value;
+        //use saved values if possible otherwise use the slider's value
+        hills = PlayerPrefs.GetFloat("hills", hillsSlider.value);
+        length = PlayerPrefs.GetFloat("length", lengthSlider.value);
+        gaps = PlayerPrefs.GetFloat("gaps", gapsSlider.value);
+        platforms = PlayerPrefs.GetFloat("platforms", platformsSlider.value);
+        enemies = PlayerPrefs.GetFloat("enemies", enemiesSlider.value);
+        coins = PlayerPrefs.GetFloat("coins", coinsSlider.value);
+
+        //apply values to generation scripts
+        perlin.scale = hills;
+        firstPass.endX = length;
+        secondPass.gapsMultiplier = gaps;
+        secondPass.platformsMultiplier = platforms;
+        thirdPass.maxEnemies = (int)enemies;
+        collectables.maxLevelCoins = (int)coins;
+
+        //set slider values (stay consistent when new levels are generated)
+        lengthSlider.value = length;
+        hillsSlider.value = hills;
+        gapsSlider.value = gaps;
+        platformsSlider.value = platforms;
+        enemiesSlider.value = enemies;
+        coinsSlider.value = coins;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (player.win)
@@ -62,20 +78,15 @@ public class GeneralLevelManagerScript : MonoBehaviour
 
     public void GenerateLevel()
     {
-        length = lengthSlider.value;
-        hills = hillsSlider.value;
-        gaps = gapsSlider.value;
-        platforms = platformsSlider.value;  
-        enemies = enemiesSlider.value;
-        coins = coinsSlider.value;
+        // Save slider values before reloading the scene
+        PlayerPrefs.SetFloat("length", lengthSlider.value);
+        PlayerPrefs.SetFloat("hills", hillsSlider.value);
+        PlayerPrefs.SetFloat("gaps", gapsSlider.value);
+        PlayerPrefs.SetFloat("platforms", platformsSlider.value);
+        PlayerPrefs.SetFloat("enemies", enemiesSlider.value);
+        PlayerPrefs.SetFloat("coins", coinsSlider.value);
+        PlayerPrefs.Save();
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        
-        lengthSlider.value = length;
-        hillsSlider.value = hills;
-        gapsSlider.value = gaps;
-        platformsSlider.value = platforms;  
-        enemiesSlider.value = enemies;
-        coinsSlider.value = coins;
     }
 }

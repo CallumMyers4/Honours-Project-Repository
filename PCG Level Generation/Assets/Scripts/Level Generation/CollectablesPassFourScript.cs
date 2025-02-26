@@ -25,14 +25,13 @@ public class CollectablesPassFourScript : MonoBehaviour
     private EnemyPassThreeScript thirdPass;    //access second pass
     [SerializeField]
     private GameObject coin;   //coin prefab
+    public int maxLevelCoins = 70;   //max number of coins per level (set in parameter UI)
     private int maxCoins = 7, minCoins = 3, coinsInSet = 0;     //the most/least coins that should be spawned together, how many coins in the current set
     private float groundY;  //height of ground at pos being checked
     private bool groundBelow, platformBelow;   //whether currently checking a ground pos or gap
     public int totalCoins;  //store how many coins are in the level to display in UI later
     private int yOffset = 1;    //distance from ground to spawn coin
     public bool passFourCompleted;  //keep track of when this script finishes
-
-    public int maxLevelCoins = 70;   //max number of coins per level (set in parameter UI)
 
     //coin check states
     private enum CoinStates
