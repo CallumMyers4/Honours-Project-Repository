@@ -8,7 +8,7 @@ using System.Runtime.ExceptionServices;
 
 public class GeneralLevelManagerScript : MonoBehaviour
 {
-    public GameObject mainPanel, winPanel, parametersPanel;
+    public GameObject mainPanel, winPanel, parametersPanel, pausePanel;
     public TMP_Text coinsCounterText;
     public PlayerMovementScript player;
     public PerlinNoiseGeneratorScript perlin;
@@ -20,8 +20,9 @@ public class GeneralLevelManagerScript : MonoBehaviour
     public Slider lengthSlider, hillsSlider, gapsSlider, platformsSlider, enemiesSlider, coinsSlider;   //references to UI parameter sliders
     public float length, hills, gaps, platforms, enemies, coins;
 
+    public bool gamePaused = false; //stop game when paused
+
     public static GeneralLevelManagerScript thisScript;
-    public float perlinScale = 20.0f; // Default value
 
     void Awake()
     {
@@ -57,23 +58,6 @@ public class GeneralLevelManagerScript : MonoBehaviour
             mainPanel.SetActive(false);
             winPanel.SetActive(true);
         }
-        else
-        {
-            Debug.Log("Perlin.scale: " + perlin.scale);
-            coinsCounterText.SetText(player.coinsCollected.ToString() + "/" + collectables.totalCoins.ToString());
-        }
-    }
-
-    public void NewLevel()
-    {
-        winPanel.SetActive(false);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
-    public void Menu()
-    {
-        winPanel.SetActive(false);
-        SceneManager.LoadScene("MainMenu");
     }
 
     public void GenerateLevel()
@@ -88,5 +72,40 @@ public class GeneralLevelManagerScript : MonoBehaviour
         PlayerPrefs.Save();
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void NewLevel()
+    {
+        winPanel.SetActive(false);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void Menu()
+    {
+        winPanel.SetActive(false);
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    public void Pause()
+    {
+        gamePaused = true;
+        mainPanel.SetActive(false);
+        parametersPanel.SetActive(false);
+        pausePanel.SetActive(true);
+    }
+
+    public void Unpause()
+    {
+        gamePaused = false;
+        pausePanel.SetActive(false);
+        parametersPanel.SetActive(false);
+        mainPanel.SetActive(true);
+    }
+
+    public void ParameterMenu()
+    {
+        gamePaused = true;
+        pausePanel.SetActive(false);
+        parametersPanel.SetActive(true);
     }
 }

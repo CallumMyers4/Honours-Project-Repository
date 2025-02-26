@@ -5,7 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class PlayerControlsScript : MonoBehaviour
 {
-    // Update is called once per frame
+    private GeneralLevelManagerScript levelManager;
+    
+    void Start()
+    {
+        levelManager = FindObjectOfType<GeneralLevelManagerScript>();
+    }
+
     void Update()
     {
         //reload scene if player presses F5
@@ -24,6 +30,15 @@ public class PlayerControlsScript : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             SceneManager.LoadScene("PassOneTwoThreeScene");
+        }
+
+        //set pausing and unpausing
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (levelManager.gamePaused)
+                levelManager.Unpause();
+            else
+                levelManager.Pause();
         }
     }
 }
