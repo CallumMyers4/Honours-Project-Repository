@@ -93,10 +93,6 @@ public class PlayerMovementScript : MonoBehaviour
             dead = true;    //tell other script player is dead
             transform.position = new Vector3(spawnPoint.x, spawnPoint.y, transform.position.z);     //reset to spawn
         }
-
-        //if other object is part of the win zone
-        if (other.gameObject.CompareTag("WinZone"))
-            win = true;     //run the player wins functions
     } 
 
     private void OnCollisionStay2D(Collision2D other)
@@ -141,5 +137,9 @@ public class PlayerMovementScript : MonoBehaviour
             coinsCollected++;   //increase the number of coins collected by player
             Destroy(other.gameObject);  //destroy the coin to prevent multiple pickups
         }
+
+        //if other object is part of the win zone
+        if (other.gameObject.CompareTag("WinZone"))
+            win = true;     //run the player wins functions
     }
 }

@@ -22,7 +22,8 @@ public class GeneralLevelManagerScript : MonoBehaviour
 
     public bool gamePaused = false; //stop game when paused
 
-    public static GeneralLevelManagerScript thisScript;
+    [SerializeField]
+    private int passes;     //keep track of how many passes are in current level
 
     void Awake()
     {
@@ -34,13 +35,20 @@ public class GeneralLevelManagerScript : MonoBehaviour
         enemies = PlayerPrefs.GetFloat("enemies", enemiesSlider.value);
         coins = PlayerPrefs.GetFloat("coins", coinsSlider.value);
 
-        //apply values to generation scripts
-        perlin.scale = hills;
-        firstPass.endX = length;
-        secondPass.gapsMultiplier = gaps;
-        secondPass.platformsMultiplier = platforms;
-        thirdPass.maxEnemies = (int)enemies;
-        collectables.maxLevelCoins = (int)coins;
+        //apply values to generation scripts according to the level and how many scripts should run
+        if (passes >= 0)
+            perlin.scale = hills;
+        if (passes >= 1)
+            firstPass.endX = length;
+        if (passes >= 2)
+        {
+            secondPass.gapsMultiplier = gaps;
+            secondPass.platformsMultiplier = platforms;
+        }
+        if (passes >= 3)
+            thirdPass.maxEnemies = (int)enemies;
+        if (passes >= 4)
+            collectables.maxLevelCoins = (int)coins;
 
         //set slider values (stay consistent when new levels are generated)
         lengthSlider.value = length;

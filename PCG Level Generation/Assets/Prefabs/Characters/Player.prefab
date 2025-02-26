@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 7798070774531901519}
   - component: {fileID: 1021253546546727735}
   - component: {fileID: 4436073611158436031}
-  - component: {fileID: -6975608167434500211}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -171,7 +170,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0
-  m_GravityScale: 0.8
+  m_GravityScale: 3
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -195,21 +194,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9fe92992c6c7e74ea51deb1827c4295, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inAir: 0
   dead: 0
   win: 0
---- !u!114 &-6975608167434500211
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3961734674847322518}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37ae367804bd69341a656349b30bd889, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  coinsCollected: 0
 --- !u!1 &4725239616815994963
 GameObject:
   m_ObjectHideFlags: 0
