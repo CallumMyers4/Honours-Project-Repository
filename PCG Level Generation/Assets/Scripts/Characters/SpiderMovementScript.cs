@@ -4,34 +4,34 @@ using UnityEngine;
 
 public class SpiderMovementScript : MonoBehaviour
 {
-    //speed to move at
-    private float moveSpeed = 3.0f;
-    //reference to sprite renderer for flipping
+    private float moveSpeed = 3.0f;    //speed to move at
+    private Vector3 spawnPoint; //remember spawn point
+    private bool moveLeft = true;       //decide which way to move
     [SerializeField]
-    SpriteRenderer spriteRenderer;
-    private PlayerMovementScript playerRef; //reference to the player to know when dead
-    private Vector3 spawnPoint; //store spawn point
-    //decide which way to move
-    bool moveLeft = true;
+    SpriteRenderer spriteRenderer;      //reference to sprite renderer for flipping
+    private PlayerMovementScript playerRef; //reference to the player to know when player dies
 
     void Start()
     {
-        spawnPoint = transform.position;
+        spawnPoint = transform.position;    //set spawn point to starting position
         
-        playerRef = FindObjectOfType<PlayerMovementScript>();   //find player
+        playerRef = FindObjectOfType<PlayerMovementScript>();   //find reference to player object
 
     }
 
     // Update is called once per frame
     void Update()
     {
+        //if moving left and is still safe, go left, else try going right
         if (moveLeft)
-        {
+        {  
+            //check if position - 1 (x) is safe for spider to move forward, then move if so
             if (CheckIfSafe(-1))
             {
                 transform.position = Vector3.MoveTowards(transform.position, new Vector2(transform.position.x - 1, transform.position.y),
                                                         moveSpeed * Time.deltaTime);
             }
+            //otherwise flip the sprite and try moving right
             else
             {
                 spriteRenderer.flipX = true;
@@ -40,11 +40,13 @@ public class SpiderMovementScript : MonoBehaviour
         }
         else
         {
+            //check if position + 1 (x) is safe for spider to move forward, then move if so
             if (CheckIfSafe(1))
             {
                 transform.position = Vector3.MoveTowards(transform.position, new Vector2(transform.position.x + 1, transform.position.y),
                                                         moveSpeed * Time.deltaTime);
             }
+            //otherwise flip sprite and try moving left
             else
             {
                 spriteRenderer.flipX = false;
@@ -52,30 +54,29 @@ public class SpiderMovementScript : MonoBehaviour
             }
         }
 
-        //reset if player dies
+        //reset position to spawn point if player dies
         if (playerRef.dead)
         {
             transform.position = spawnPoint;
         }
     }
 
-    bool CheckIfSafe(int direction)
+    //function used to check if next position in current direction is safe to move to
+    private bool CheckIfSafe(int direction)
     {
-        //fire one raycast to check 1 block ahead on X, and all the way down on Y (1 block ahead)
-        //if in future i dont want spider coming off platform, change 100.f in hitY to 1 and it will stay on platform too
-
-        //check for higher ground ahead
+        //fire a raycast in a straight line ahead
         RaycastHit2D hitX = Physics2D.Raycast(new Vector2(transform.position.x + direction, transform.position.y), Vector2.right * direction, 0.01f);
 
-        //check for ground slightly ahead and below (to avoid falling off)
+        //fire a raycast a block ahead directly downwards
         RaycastHit2D hitY = Physics2D.Raycast(new Vector2(transform.position.x + direction, transform.position.y - 0.5f), Vector2.down, 5.0f);
 
-        //if finds a block in the way or a gap then tell spider not to move
+        //if the straight raycast hits higher ground or if the downwards raycast hits a lose zone (meaning theres a gap ahead)
         if ((hitX.collider != null && hitX.collider.gameObject.CompareTag("Ground")) || hitY.collider == null || hitY.collider.gameObject.CompareTag("LoseZone"))
         {
-            return false;
+            return false;   //return not safe to move
         }
+        //if the next block is walkable
         else
-            return true;
+            return true;    //return safe to move
     }
 }

@@ -14,7 +14,7 @@ public class PlayerControlsScript : MonoBehaviour
 
     void Update()
     {
-        //reload scene if player presses F5
+        //reload current level if F5 pressed, otherwise if player presses a button between 1 and 4, they can go to the level specific to that pass
         if (Input.GetKeyDown(KeyCode.F5))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name); 
@@ -31,10 +31,15 @@ public class PlayerControlsScript : MonoBehaviour
         {
             SceneManager.LoadScene("PassOneTwoThreeScene");
         }
+        else if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            SceneManager.LoadScene("PassOneTwoThreeFourScene");
+        }
 
-        //set pausing and unpausing
+        //pause or unpause when player presses escape
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            //if game is currently paused, close menu then go back to level, else pause game and open menu
             if (levelManager.gamePaused)
                 levelManager.Unpause();
             else
