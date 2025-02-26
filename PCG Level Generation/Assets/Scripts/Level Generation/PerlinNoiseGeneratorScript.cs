@@ -21,7 +21,6 @@ public class PerlinNoiseGeneratorScript : MonoBehaviour
         xOffset = seed;
         yOffset = seed;
 
-        Debug.Log("Scale: " + scale);
         CreatePerlinNoise();    //populate noise texture
 
         scale = GameObject.Find("Level Manager").GetComponent<GeneralLevelManagerScript>().hills;
