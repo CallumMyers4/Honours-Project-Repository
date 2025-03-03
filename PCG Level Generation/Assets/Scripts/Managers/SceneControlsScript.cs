@@ -19,19 +19,19 @@ public class PlayerControlsScript : MonoBehaviour
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name); 
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             SceneManager.LoadScene("PassOneOnlyScene");
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             SceneManager.LoadScene("PassOneTwoScene");
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             SceneManager.LoadScene("PassOneTwoThreeScene");
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha4))
+        if (Input.GetKeyDown(KeyCode.Alpha4))
         {
             SceneManager.LoadScene("PassOneTwoThreeFourScene");
         }
