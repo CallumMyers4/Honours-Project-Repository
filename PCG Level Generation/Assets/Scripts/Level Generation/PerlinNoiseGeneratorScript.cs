@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class PerlinNoiseGeneratorScript : MonoBehaviour
 {
-    private int width = 256, height = 256;
+    private int width = 256, height = 256;  //width and height of map to draw
     private int xOffset, yOffset;   //used to randomise the position of the noise to create new levels
     [HideInInspector]
-    public float scale = 20.0f;
+    public float scale = 20.0f;     //zoom of the noise, affects how jagged terrain is
     [SerializeField]
-    public int seed = 0;   //in later iteration there will be an option for user input, but random for now
-    private Texture2D perlinNoise;
-    public bool noiseGenerated = false; //check when noise generation is completed
+    public int seed = 0;   //randomise map each time
+    private Texture2D perlinNoise;  //store the noise map
+    public bool noiseGenerated = false;     //check when noise generation is completed
 
     void Start()
     {
@@ -23,9 +23,10 @@ public class PerlinNoiseGeneratorScript : MonoBehaviour
 
         CreatePerlinNoise();    //populate noise texture
 
+        //zoom in/out according to value set by player on parameter menu
         scale = GameObject.Find("Level Manager").GetComponent<GeneralLevelManagerScript>().hills;
 
-        noiseGenerated = true;
+        noiseGenerated = true;          //tell next script to run
     }
 
     //returns the generated perlin noise texture
@@ -34,7 +35,7 @@ public class PerlinNoiseGeneratorScript : MonoBehaviour
         return perlinNoise;
     }
 
-    //void to call when new noise needs to be generated
+    //generate a noise map
     public void CreatePerlinNoise()
     {
         perlinNoise = new Texture2D(width, height);     //create a new texture to store the noise
@@ -48,7 +49,7 @@ public class PerlinNoiseGeneratorScript : MonoBehaviour
                 float xCoordinate = (float) x / scale + xOffset;
                 float yCoordinate = (float) y / scale + yOffset;
 
-                float value = Mathf.PerlinNoise(xCoordinate, yCoordinate);      //calculate the value according to built in function
+                float value = Mathf.PerlinNoise(xCoordinate, yCoordinate);      //calculate the value according to Unity built-in perlin function
                 Color color = new Color(value, value, value);   //creates a colour based on the value given by perlin function
 
                 perlinNoise.SetPixel(x, y, color);  //add the colour calculated to the texture

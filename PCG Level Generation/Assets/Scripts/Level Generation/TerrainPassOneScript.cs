@@ -4,25 +4,22 @@ using UnityEngine;
 
 public class TerrainPassOneScript : MonoBehaviour
 {
-    //made all these public for now for easy access to next script, may change later
     [SerializeField]
     public float startX, endX = 200;     //start and end positions for the level
     [SerializeField]
     public int lowestY, highestY;    //top and bottom constraints of the level height
     [SerializeField]
-    public int maxHeightChange, startPlatformLength, endPlatformLength = 4;
+    public int maxHeightChange, startPlatformLength, endPlatformLength = 4;     //max height between blocks, length of starting flat ground, length of win zone
     [SerializeField]
     public PerlinNoiseGeneratorScript noiseGenerator;  //reference to script for generating noise
     [SerializeField]
-    private GameObject groundPrefab, endZonePrefab, deathZonePrefab;
+    private GameObject groundPrefab, endZonePrefab, deathZonePrefab;    //prefabs to make ground, end zone and lose zone
     int previousHeight = 0;     //stores the height of the last column generated
     public bool passOneCompleted = false;   //checks when pass is completed
 
-    //in update now instead of start because if noise generation script is not completed by the time this one runs start it will never
-    //run the script
     void Update()
     {
-        //will not run script unless the noise has successfully generated
+        //runs once last pass completes
         if (noiseGenerator.noiseGenerated == true && passOneCompleted == false)
         {
             GenerateLevel();
@@ -30,7 +27,6 @@ public class TerrainPassOneScript : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
     private void GenerateLevel()
     {
         float levelWidth = endX - startX;   //works out the total width of the level by subtracting start pos from end pos
@@ -40,15 +36,16 @@ public class TerrainPassOneScript : MonoBehaviour
         //run through each x position in the level
         for (int x = 0; x < levelWidth; x++)
         {
+            //create death zone layer 1 block below lowest point in the level
             Instantiate(deathZonePrefab, new Vector3(x + startX, lowestY - 1, 0), Quaternion.identity, transform);
 
             int groundHeight;
-
             //sets ground height to 0 until a flat starting platform has been generated (prevents player spawning inside a tile)
             if (x < startPlatformLength || x > endX - endPlatformLength)
             {
-                groundHeight = 1;
+                groundHeight = 1;   //keep consistent height
 
+                //create a block of win zone prefabs at the end platform of the level so player has a goal to aim for
                 if (x > endX - endPlatformLength)
                 {
                     for (int i = x; i < endX; i++)
@@ -60,6 +57,7 @@ public class TerrainPassOneScript : MonoBehaviour
                     }
                 }
             }
+            //once moved past starting platform
             else
             {
                 int textureX = Mathf.FloorToInt((float)(x + startX) / levelWidth * noiseTexture.width); //moves to the correct pixel within the texture
@@ -75,7 +73,7 @@ public class TerrainPassOneScript : MonoBehaviour
                 (highestY + lowestY)/2 centres it back to 0
                 */
                 groundHeight = Mathf.FloorToInt(groundDirection * ((highestY - lowestY) / 2) + ((highestY + lowestY) / 2));
-                groundHeight = Mathf.Max(groundHeight, 1); //always place at least one block
+                groundHeight = Mathf.Max(groundHeight, 1); //always place at least one block, gaps are created in future script
 
                 //check to ensure the new height does not make the level unplayable, then sets last height to this one for next loop
                 groundHeight = Mathf.Clamp(groundHeight, previousHeight - maxHeightChange, previousHeight + maxHeightChange);

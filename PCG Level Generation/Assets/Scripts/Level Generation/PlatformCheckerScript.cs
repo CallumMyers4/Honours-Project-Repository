@@ -5,10 +5,8 @@ using UnityEngine;
 
 public class PlatformCheckerScript : MonoBehaviour
 {
-    //ref to source https://stackoverflow.com/questions/63106256/find-and-return-nearest-gameobject-with-tag-unity
-    // Start is called before the first frame update
-
     private float threshold = 2.0f;
+    
     void Start()
     {
         //start with high distance
@@ -24,7 +22,6 @@ public class PlatformCheckerScript : MonoBehaviour
         //set current position to platforms position
         Vector3 currentPosition = transform.position;
 
-
         //check all ground objects and find the one with the lowest distance
         for (int i = 0; i < groundObjects.Length; i++)
         {
@@ -39,11 +36,5 @@ public class PlatformCheckerScript : MonoBehaviour
         //if too close then destroy platform
         if (minDistance <= threshold)
             Destroy(gameObject);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

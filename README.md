@@ -13,7 +13,7 @@ https://docs.unity3d.com/6000.0/Documentation/ScriptReference/RaycastHit2D.html 
 https://github.com/chriscore/MarkovSharp - C# Markov Chains in VS
 https://nickmcd.me/2019/10/30/markov-chains-for-procedural-buildings/ - Markov in Unity (Nick's blog)
 https://www.sbgames.org/sbgames2018/files/papers/ComputacaoShort/188123.pdf - Markov in Unity (Thesis)
-
+https://stackoverflow.com/questions/63106256/find-and-return-nearest-gameobject-with-tag-unity - finding objects
 
 ------------------------------------------------DEVELOPMENT-----------------------------------------------------------------------------
 - Need to work out why so many gaps are only 1 long, and edit params to try to avoid 1 block of ground between gaps (make a 
