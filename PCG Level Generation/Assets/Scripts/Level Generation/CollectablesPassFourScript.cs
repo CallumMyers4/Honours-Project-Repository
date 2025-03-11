@@ -47,6 +47,7 @@ public class CollectablesPassFourScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //run this pass once previous pass finishes
         if (thirdPass.passThreeCompleted == true && passFourCompleted == false)
         {
             GenerateCoins();

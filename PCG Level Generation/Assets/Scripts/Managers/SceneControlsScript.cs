@@ -9,7 +9,7 @@ public class PlayerControlsScript : MonoBehaviour
     
     void Start()
     {
-        levelManager = FindObjectOfType<GeneralLevelManagerScript>();
+        levelManager = FindObjectOfType<GeneralLevelManagerScript>();   //get access to the overall level manager
     }
 
     void Update()

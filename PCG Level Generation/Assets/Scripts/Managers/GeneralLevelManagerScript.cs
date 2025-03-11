@@ -8,17 +8,17 @@ using System.Runtime.ExceptionServices;
 
 public class GeneralLevelManagerScript : MonoBehaviour
 {
-    public GameObject mainPanel, winPanel, parametersPanel, pausePanel;
-    public TMP_Text coinsCounterText;
-    public PlayerMovementScript player;
-    public PerlinNoiseGeneratorScript perlin;
-    public TerrainPassOneScript firstPass;
-    public TerrainPassTwoScript secondPass;
-    public EnemyPassThreeScript thirdPass;
-    public CollectablesPassFourScript collectables;
+    public GameObject mainPanel, winPanel, parametersPanel, pausePanel;     //game UI, UI to show if player wins, parameter menu, pause menu
+    public TMP_Text coinsCounterText;   //coins collected by player
+    public PlayerMovementScript player;     //ref to player object
+    public PerlinNoiseGeneratorScript perlin;   //perlin generator
+    public TerrainPassOneScript firstPass;  //first pass script
+    public TerrainPassTwoScript secondPass;     //second pass script
+    public EnemyPassThreeScript thirdPass;  //third pass script
+    public CollectablesPassFourScript collectables;     //fourth pass script
 
     public Slider lengthSlider, hillsSlider, gapsSlider, platformsSlider, enemiesSlider, coinsSlider;   //references to UI parameter sliders
-    public float length, hills, gaps, platforms, enemies, coins;
+    public float length, hills, gaps, platforms, enemies, coins;    //stores current value that player has entered on each slider
 
     public bool gamePaused = false; //stop game when paused
 
@@ -61,6 +61,7 @@ public class GeneralLevelManagerScript : MonoBehaviour
 
     void Update()
     {
+        //if player reaches the win zone, change UI to win screen
         if (player.win)
         {
             mainPanel.SetActive(false);
@@ -70,7 +71,7 @@ public class GeneralLevelManagerScript : MonoBehaviour
 
     public void GenerateLevel()
     {
-        // Save slider values before reloading the scene
+        //save slider values before reloading the scene
         PlayerPrefs.SetFloat("length", lengthSlider.value);
         PlayerPrefs.SetFloat("hills", hillsSlider.value);
         PlayerPrefs.SetFloat("gaps", gapsSlider.value);
@@ -79,21 +80,25 @@ public class GeneralLevelManagerScript : MonoBehaviour
         PlayerPrefs.SetFloat("coins", coinsSlider.value);
         PlayerPrefs.Save();
 
+        //reload current scene with new parameters
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    //generate a new level
     public void NewLevel()
     {
         winPanel.SetActive(false);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    //open main menu
     public void Menu()
     {
         winPanel.SetActive(false);
         SceneManager.LoadScene("MainMenu");
     }
 
+    //pause game
     public void Pause()
     {
         gamePaused = true;
@@ -102,6 +107,7 @@ public class GeneralLevelManagerScript : MonoBehaviour
         pausePanel.SetActive(true);
     }
 
+    //back to level
     public void Unpause()
     {
         gamePaused = false;
@@ -110,6 +116,7 @@ public class GeneralLevelManagerScript : MonoBehaviour
         mainPanel.SetActive(true);
     }
 
+    //edit parameters
     public void ParameterMenu()
     {
         gamePaused = true;
