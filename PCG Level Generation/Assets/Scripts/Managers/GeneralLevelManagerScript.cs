@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Runtime.ExceptionServices;
+using System;
 
 public class GeneralLevelManagerScript : MonoBehaviour
 {
@@ -66,6 +67,11 @@ public class GeneralLevelManagerScript : MonoBehaviour
         {
             mainPanel.SetActive(false);
             winPanel.SetActive(true);
+        }
+        else
+        {
+            if (mainPanel.activeInHierarchy)
+               coinsCounterText.SetText(Convert.ToString(player.coinsCollected));
         }
     }
 
