@@ -71,7 +71,7 @@ public class CollectablesPassFourScript : MonoBehaviour
             //start of Markovs
             CheckGround(i);  //pass in the current X value being checked to see whether there is ground
 
-            while (!checkComplete)
+            while (!checkComplete && (totalCoins < maxLevelCoins))
             {
                 switch (currentState)
                 {

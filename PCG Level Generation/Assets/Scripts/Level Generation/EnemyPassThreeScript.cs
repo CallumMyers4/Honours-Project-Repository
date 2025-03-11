@@ -25,10 +25,10 @@ public class EnemyPassThreeScript : MonoBehaviour
     private GameObject enemyChoice;     //stores the current enemy selected by the markov
     public bool passThreeCompleted;   //tells next pass when to run
     private float groundY;  //height of ground at pos being checked
-    private float batHeight = 4, wormHeight = 1.64f;    //distance above ground to spawn bat, distance to move worm down
+    private float batHeight = 4;    //distance above ground to spawn bat, distance to move worm down
     private bool groundBelow, platformBelow;   //whether currently checking a ground pos or gap
     
-    public int maxEnemies;  //max enemies per level as set in parameters UI
+    public int maxEnemies, enemyCount = 0;  //max enemies per level as set in parameters UI, enemies currently spawned
 
     //enemy check states
     private enum EnemyStates
@@ -86,7 +86,7 @@ public class EnemyPassThreeScript : MonoBehaviour
             //start of Markovs
             CheckGround(i);  //pass in the current X value being checked to see whether there is ground
 
-            while (!checkComplete)
+            while (!checkComplete && (enemyCount < maxEnemies))
             {
                 switch (currentState)
                 {
@@ -174,10 +174,12 @@ public class EnemyPassThreeScript : MonoBehaviour
                         if (enemyChoice == bat)
                         {        
                             Instantiate(enemyChoice, new Vector3(i, groundY + batHeight), Quaternion.identity);
+                            enemyCount++;
                         }
                         else if (enemyChoice == spider)
                         {                           
                             Instantiate(enemyChoice, new Vector3(i, groundY + 1), Quaternion.identity);
+                            enemyCount++;
                         }
 
                         lastEnemyBlocks = 0;  //reset time counter
