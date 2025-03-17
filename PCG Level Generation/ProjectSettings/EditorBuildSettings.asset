@@ -20,7 +20,4 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/PassOneTwoThreeFourScene.unity
     guid: 5d8fa1be5d7dabb47b3471f83ca46817
-  - enabled: 1
-    path: Assets/Scenes/PassOneTwoThreeFourFiveScene.unity
-    guid: 350ed8cc111c4694180486e848bfa84c
   m_configObjects: {}
