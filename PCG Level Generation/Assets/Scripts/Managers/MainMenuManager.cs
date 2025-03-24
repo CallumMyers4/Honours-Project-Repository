@@ -40,7 +40,7 @@ public class MainMenuManager : MonoBehaviour
     //open the survey (for user feedback)
     public void GoToSurvey()
     {
-        string url = "https://forms.office.com/Pages/ResponsePage.aspx?id=uhrLqo_zDkGRU8FqAOv0zIoh24ArNJlPrAvDbJSdOlBUOFNDQU5CSFE1WVowUkY5WVo4TVYyTjZFRi4u";
+        string url = "https://forms.office.com/Pages/ResponsePage.aspx?id=uhrLqo_zDkGRU8FqAOv0zIoh24ArNJlPrAvDbJSdOlBUN1lWRkoyRlZQTDM0VVVGRElERUlBMFlHNy4u";
 
         Application.OpenURL(url); // Opens the link in the browser
     }
